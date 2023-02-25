@@ -1,0 +1,1 @@
+C:\Users\PC\Desktop\FitnessTrackMicro\obj\Release\net7.0\browser-wasm\PubTmp\Out\web.config
