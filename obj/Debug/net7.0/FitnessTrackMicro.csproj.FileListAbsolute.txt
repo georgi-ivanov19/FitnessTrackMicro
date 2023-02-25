@@ -407,8 +407,6 @@ C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\wwwroot\_framework\System
 C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\wwwroot\_framework\System.Security.AccessControl.dll.gz
 C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\wwwroot\_framework\System.Net.NameResolution.dll.gz
 C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\wwwroot\_framework\System.Security.Cryptography.X509Certificates.dll.gz
-C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\wwwroot\service-worker.js
-C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\wwwroot\service-worker-assets.js
 C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\FitnessTrackMicro.staticwebassets.runtime.json
 C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\FitnessTrackMicro.dll
 C:\Users\PC\Desktop\FitnessTrackMicro\bin\Debug\net7.0\FitnessTrackMicro.pdb
@@ -835,8 +833,6 @@ C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\scopedcss\Shared\MainLayo
 C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
 C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\scopedcss\bundle\FitnessTrackMicro.styles.css
 C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\scopedcss\projectbundle\FitnessTrackMicro.bundle.scp.css
-C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\service-worker\service-worker.js
-C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\service-worker-assets.js.build
 C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\FitnessTrackMicro.csproj.CopyComplete
 C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\FitnessTrackMicro.dll
 C:\Users\PC\Desktop\FitnessTrackMicro\obj\Debug\net7.0\refint\FitnessTrackMicro.dll

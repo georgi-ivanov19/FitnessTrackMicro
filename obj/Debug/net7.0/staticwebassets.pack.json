@@ -13,14 +13,6 @@
       "PackagePath": "staticwebassets\\FitnessTrackMicro.styles.css"
     },
     {
-      "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\obj\\Debug\\net7.0\\service-worker-assets.js",
-      "PackagePath": "staticwebassets\\service-worker-assets.js"
-    },
-    {
-      "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\obj\\Debug\\net7.0\\service-worker\\service-worker.published.js",
-      "PackagePath": "staticwebassets\\service-worker.js"
-    },
-    {
       "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\wwwroot\\appsettings.json",
       "PackagePath": "staticwebassets\\appsettings.json"
     },
@@ -81,16 +73,8 @@
       "PackagePath": "staticwebassets\\icon-192.png"
     },
     {
-      "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\wwwroot\\icon-512.png",
-      "PackagePath": "staticwebassets\\icon-512.png"
-    },
-    {
       "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
-    },
-    {
-      "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\wwwroot\\manifest.json",
-      "PackagePath": "staticwebassets\\manifest.json"
     },
     {
       "Id": "C:\\Users\\PC\\Desktop\\FitnessTrackMicro\\wwwroot\\sample-data\\weather.json",
