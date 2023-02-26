@@ -1,0 +1,22 @@
+[
+  {
+    "Id": 1,
+    "ApplicationUserId": "ffbccd40-32ee-4dac-bd5b-37da4d48e545",
+    "Category": "Breakfast",
+    "TotalCalories": 1000,
+    "Protein": 100,
+    "Fats": 20,
+    "Carbohydrates": 100,
+    "Date": "2023-02-25T00:00:00"
+  },
+  {
+    "Id": 2,
+    "ApplicationUserId": "ffbccd40-32ee-4dac-bd5b-37da4d48e545",
+    "Category": "Lunch",
+    "TotalCalories": 800,
+    "Protein": 100,
+    "Fats": 0,
+    "Carbohydrates": 100,
+    "Date": "2023-02-25T00:00:00"
+  }
+]

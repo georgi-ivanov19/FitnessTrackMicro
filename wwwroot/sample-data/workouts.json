@@ -1,0 +1,37 @@
+[
+  {
+    "Id": 1,
+    "ApplicationUserId": "ffbccd40-32ee-4dac-bd5b-37da4d48e545",
+    "Name": "workout 1",
+    "DayOfWeek": "Monday",
+    "Exercises": [
+      {
+        "Id": 1,
+        "Name": "EXERCISE 1",
+        "WorkoutId": 1,
+        "DefaultNumberOfSets": 3,
+        "TargetMuscle": "MUSCLE",
+        "ExerciseSets": []
+      },
+      {
+        "Id": 2,
+        "Name": "EXERCISE 2",
+        "WorkoutId": 1,
+        "DefaultNumberOfSets": 4,
+        "TargetMuscle": "MUSCLE 2",
+        "ExerciseSets": []
+      }
+    ],
+    "DateLastCompleted": "0001-01-01T00:00:00",
+    "TrackedWorkouts": []
+  },
+  {
+    "Id": 2,
+    "ApplicationUserId": "ffbccd40-32ee-4dac-bd5b-37da4d48e545",
+    "Name": "workout 2",
+    "DayOfWeek": "Tuesday",
+    "Exercises": [],
+    "DateLastCompleted": "0001-01-01T00:00:00",
+    "TrackedWorkouts": []
+  }
+]
