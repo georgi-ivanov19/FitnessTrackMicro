@@ -1,0 +1,67 @@
+﻿@using FitnessTrackMicro.Models;
+@using FitnessTrackMicro.Services.MeasurementsService;
+@inject IMeasurementsService MeasurementsService;
+
+<EditForm Model="m" OnSubmit="HandleSubmit">
+    <div>
+        <label for="type"> Type </label>
+        <RadzenDropDown Placeholder="Type" id="type" Data=@measurementTypes @bind-Value="m.Type" class="form-control"></RadzenDropDown>
+        <label for="value"> Value </label>
+        <InputNumber id="value" @bind-Value="m.Value" class="form-control"></InputNumber>
+        <label for="unit"> Unit </label>
+        <InputText id="unit" @bind-Value="m.Unit" class="form-control"></InputText>
+        <label for="date"> Date </label>
+        <InputDate id="date" @bind-Value="m.Date" class="form-control"></InputDate>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">@btnText</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public string? DefaultType { get; set; }
+
+    private string btnText = string.Empty;
+    private Measurement m = new Measurement();
+    private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        btnText = Id == null ? "Create" : "Confirm";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+            if (DefaultType != null)
+                m.Type = DefaultType;
+
+            m.Date = DateTime.Today;
+        }
+        else
+        {
+            await MeasurementsService.GetSingleMeasurement((int)Id);
+        }
+
+    }
+    async Task HandleSubmit()
+    {
+        if (Id == null)
+        {
+            await MeasurementsService.CreateMeasurement(m);
+        }
+        else
+        {
+            await MeasurementsService.UpdateMeasurement(m);
+        }
+    }
+
+    async Task DeleteHero()
+    {
+        await MeasurementsService.DeleteMeasurement(m.Id);
+    }
+}

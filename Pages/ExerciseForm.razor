@@ -1,0 +1,70 @@
+@using FitnessTrackMicro.Models;
+@using FitnessTrackMicro.Services.ExerciseService;
+@inject IExerciseService ExerciseService;
+
+<EditForm Model="e" OnSubmit="HandleSubmit">
+    <div>
+        <div class="my-2">
+            <label for="name"> Name </label>
+            <RadzenTextBox id="name" @bind-Value="e.Name" class="form-control"></RadzenTextBox>
+        </div>
+        <div class="my-2">
+            <label for="target-muscle"> Target Muscle </label>
+            <RadzenTextBox id="target-muscle" @bind-Value="e.TargetMuscle" class="form-control"></RadzenTextBox>
+        </div>
+        <div class="my-2">
+            <label for="sets-num"> Number of sets </label>
+            <RadzenNumeric id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control ms-2" Style="width: 60px;"></RadzenNumeric>
+        </div>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">@btnText</button>
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public int WorkoutId { get; set; }
+
+    private string btnText = string.Empty;
+    private Exercise e = new Exercise();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        btnText = Id == null ? "Add" : "Confirm";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+            // TODO:
+            e.WorkoutId = WorkoutId;
+        }
+        else
+        {
+            await ExerciseService.GetSingleExercise((int)Id);
+        }
+
+    }
+    async Task HandleSubmit()
+    {
+        if (Id == null)
+        {
+            e.ExerciseSets = new List<ExerciseSet>();
+            await ExerciseService.CreateExercise(e);
+        }
+        else
+        {
+            await ExerciseService.UpdateExercise(e);
+        }
+    }
+
+    async Task DeleteExercise()
+    {
+        await ExerciseService.DeleteExercise(e.Id);
+    }
+}
