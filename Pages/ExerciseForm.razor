@@ -2,24 +2,27 @@
 @using FitnessTrackMicro.Services.ExerciseService;
 @inject IExerciseService ExerciseService;
 
-<EditForm Model="e" OnSubmit="HandleSubmit">
+<RadzenTemplateForm TItem="Exercise" Data="@e" Submit="HandleSubmit">
     <div>
-        <div class="my-2">
+        <div class="m-2">
             <label for="name"> Name </label>
-            <RadzenTextBox id="name" @bind-Value="e.Name" class="form-control"></RadzenTextBox>
+            <RadzenTextBox Name="Name" id="name" @bind-Value="e.Name" class="form-control"></RadzenTextBox>
+            <RadzenRequiredValidator Component="Name" Text="Exercise name is required" Style="position: relative" />
         </div>
-        <div class="my-2">
+        <div class="m-2">
             <label for="target-muscle"> Target Muscle </label>
-            <RadzenTextBox id="target-muscle" @bind-Value="e.TargetMuscle" class="form-control"></RadzenTextBox>
+            <RadzenTextBox Name="TargetMuscle" id="target-muscle" @bind-Value="e.TargetMuscle" class="form-control"></RadzenTextBox>
+            <RadzenRequiredValidator Component="TargetMuscle" Text="Target Muscle is required" Style="position: relative" />
         </div>
-        <div class="my-2">
+        <div class="m-2">
             <label for="sets-num"> Number of sets </label>
-            <RadzenNumeric id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control ms-2" Style="width: 60px;"></RadzenNumeric>
+            <RadzenNumeric Name="Sets" id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control ms-2" Style="width: 60px;"></RadzenNumeric>
+            <RadzenNumericRangeValidator Component="Sets" Min="0.01" Text="Value must be bigger than 0" Style="position: relative; display: block;" />
         </div>
     </div>
     <br />
-    <button type="submit" class="btn btn-primary">@btnText</button>
-</EditForm>
+    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText</RadzenButton>
+</RadzenTemplateForm>
 
 
 @code {

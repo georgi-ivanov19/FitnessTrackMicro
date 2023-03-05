@@ -2,29 +2,42 @@
 @using FitnessTrackMicro.Services.MealService;
 @inject IMealService MealService;
 
-<EditForm Model="m" OnSubmit="HandleSubmit">
+<RadzenTemplateForm TItem="Meal" Data="@m" Submit="HandleSubmit">
     <div>
-        <label for="category"> Category </label>
-        <InputSelect @bind-Value="m.Category" class="form-control">
-            <option value="Breakfast">Breakfast</option>
-            <option value="Lunch">Lunch</option>
-            <option value="Dinner">Dinner</option>
-            <option value="Snack">Snack</option>
-        </InputSelect>
-        <label for="totalCals"> Total Calories </label>
-        <InputNumber id="totalCals" @bind-Value="m.TotalCalories" class="form-control"></InputNumber>
-        <label for="carbs"> Carbohydrates </label>
-        <InputNumber id="carbs" @bind-Value="m.Carbohydrates" class="form-control"></InputNumber>
-        <label for="protein"> Protein </label>
-        <InputNumber id="protein" @bind-Value="m.Protein" class="form-control"></InputNumber>
-        <label for="fats"> Fats </label>
-        <InputNumber id="fats" @bind-Value="m.Fats" class="form-control"></InputNumber>
-        <label for="date"> Date </label>
-        <InputDate id="date" @bind-Value="m.Date" class="form-control"></InputDate>
+        <div class="m-2">
+            <label for="category"> Category </label>
+            <RadzenDropDown Name="Category" id="category" Data=@mealTypes @bind-Value="m.Category" class="form-control"></RadzenDropDown>
+            <RadzenRequiredValidator Component="Category" Text="Meal category is required" Style="position: relative" />
+        </div>
+        <div class="m-2">
+            <label for="totalCals"> Total Calories </label>
+            <RadzenNumeric id="totalCals" Name="Calories" @bind-Value="m.TotalCalories" class="form-control"></RadzenNumeric>
+            <RadzenNumericRangeValidator Component="Calories" Min="0.01" Text="Value must be bigger than 0" Style="position: relative" />
+        </div>
+        <div class="m-2">
+            <label for="carbs"> Carbohydrates </label>
+            <RadzenNumeric id="carbs" Name="Carbohydrates" @bind-Value="m.Carbohydrates" class="form-control"></RadzenNumeric>
+            <RadzenNumericRangeValidator Component="Carbohydrates" Min="0.01" Text="Value must be bigger than 0" Style="position: relative" />
+        </div>
+        <div class="m-2">
+            <label for="protein"> Protein </label>
+            <RadzenNumeric id="protein" Name="ProteinProtein" @bind-Value="m.Protein" class="form-control"></RadzenNumeric>
+            <RadzenNumericRangeValidator Component="Carbohydrates" Min="0.01" Text="Value must be bigger than 0" Style="position: relative" />
+        </div>
+        <div class="m-2">
+            <label for="fats"> Fats </label>
+            <RadzenNumeric id="fats" Name="Fats" @bind-Value="m.Fats" class="form-control"></RadzenNumeric>
+            <RadzenNumericRangeValidator Component="Fats" Min="0.01" Text="Value must be bigger than 0" Style="position: relative" />
+        </div>
+        <div class="m-2">
+            <label for="date"> Date </label>
+            <RadzenDatePicker TValue="DateTime" Name="mDate" id="date" @bind-Value="m.Date" class="w-100"></RadzenDatePicker>
+            <RadzenRequiredValidator Component="mDate" Text="Value is required" Style="position: relative" />
+        </div>
     </div>
     <br />
-    <button type="submit" class="btn btn-primary">@btnText</button>
-</EditForm>
+    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText</RadzenButton>
+</RadzenTemplateForm>
 
 
 @code {
@@ -32,7 +45,7 @@
     public int? Id { get; set; }
     [Parameter]
     public DateTime? Date { get; set; }
-
+    private string[] mealTypes = { "Breakfast", "Lunch", "Dinner", "Snack" };
     private string btnText = string.Empty;
     private Meal m = new Meal();
 

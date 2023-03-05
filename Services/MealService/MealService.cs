@@ -120,5 +120,13 @@ namespace FitnessTrackMicro.Services.MealService
 
             return new MealMacros(totalCalories, totalProtein, totalCarbohydrates, totalFats);
         }
+
+        public async Task<List<AverageResults>> GetAverages(DateTime date)
+        {
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"sample-data/mealAverages.json");
+            if (result == null)
+                throw new Exception("No results found");
+            return result;
+        }
     }
 }

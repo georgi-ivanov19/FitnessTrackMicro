@@ -1,0 +1,34 @@
+[
+  {
+    "currentAverage": 400,
+    "currentCount": 0,
+    "previousAverage": 0,
+    "previousCount": 0,
+    "difference": 400,
+    "changeDirection": "up"
+  },
+  {
+    "currentAverage": 34.29,
+    "currentCount": 0,
+    "previousAverage": 0,
+    "previousCount": 0,
+    "difference": 34.29,
+    "changeDirection": "up"
+  },
+  {
+    "currentAverage": 38.57,
+    "currentCount": 0,
+    "previousAverage": 0,
+    "previousCount": 0,
+    "difference": 38.57,
+    "changeDirection": "up"
+  },
+  {
+    "currentAverage": 10.29,
+    "currentCount": 0,
+    "previousAverage": 0,
+    "previousCount": 0,
+    "difference": 10.29,
+    "changeDirection": "up"
+  }
+]

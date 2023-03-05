@@ -13,5 +13,6 @@ namespace FitnessTrackMicro.Services.MealService
         Task DeleteMeal(int id);
         IEnumerable<Meal> GetMealsByDate(DateTime date);
         MealMacros CalculateMacros(IEnumerable<Meal> meals);
+        Task<List<AverageResults>> GetAverages(DateTime date);
   }
 }

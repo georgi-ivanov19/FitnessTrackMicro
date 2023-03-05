@@ -1,18 +1,223 @@
 ﻿@page "/"
+
 @using FitnessTrackMicro.Models;
+@using FitnessTrackMicro.Services.MeasurementsService;
+@using FitnessTrackMicro.Services.MealService;
+@using FitnessTrackMicro.Services.TrackedWorkoutService;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @inject HttpClient Http
+@inject IMeasurementsService MeasurementService;
+@inject IMealService MealService;
+@inject ITrackedWorkoutService TrackedWorkoutService;
+
 <PageTitle>Dashboard</PageTitle>
-<div class="container-fluid row-cols-3">
-    <RadzenCard>
-        Hello this is card
-    </RadzenCard>
-</div>
+<RadzenCard>
+    @if (loading)
+    {
+        <RadzenProgressBar Value="100" ShowValue="false" Mode="Radzen.ProgressBarMode.Indeterminate" />
+    }
+    else
+    {
+        <RadzenText TextStyle="TextStyle.H4" class="d-inline"> Dashboard </RadzenText>
+        <div class="container-fluid mt-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Measurements </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
+                @* loading indicator *@
+                <RadzenRow class="mt-2">
+                    <RadzenColumn>
+                        @if (weightAverages != null)
+                        {
+                            <DashboardStatistic NumberOfDays=7 Title="Weight" Averages="@weightAverages" HasInfoIcon=true TrendIconTitle="@weightIconTitle()"></DashboardStatistic>
+                        }
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        @if (waistAverages != null)
+                        {
+                            <DashboardStatistic NumberOfDays=7 Title="Waist" Averages="@waistAverages" HasInfoIcon=true TrendIconTitle="@waistIconTitle()"></DashboardStatistic>
+                        }
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        @if (bfAverages != null)
+                        {
+                            <DashboardStatistic NumberOfDays=7 Title="Body fat" Averages="@bfAverages" HasInfoIcon=true TrendIconTitle="@bfIconTitle()"></DashboardStatistic>
+                        }
+                    </RadzenColumn>
+                </RadzenRow>
+            </RadzenCard>
+        </div>
+        <div class="container-fluid mt-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Meals </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (7-day moving average) </RadzenText>
+                @* loading indicator *@
+                <RadzenRow class="mt-2">
+                    @if (mealsAverages != null)
+                    {
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Calories" Averages=@mealsAverages[0] HasInfoIcon=false TrendIconTitle=@caloriesIconTitle()></DashboardStatistic>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Protein" Averages=@mealsAverages[1] HasInfoIcon=false TrendIconTitle=@macroIconTitle(1)></DashboardStatistic>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Carbohydrates" Averages=@mealsAverages[2] HasInfoIcon=false TrendIconTitle=@macroIconTitle(2)></DashboardStatistic>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <DashboardStatistic NumberOfDays=7 Title="Fats" Averages=@mealsAverages[3] HasInfoIcon=false TrendIconTitle=@macroIconTitle(3)></DashboardStatistic>
+                        </RadzenColumn>
+                    }
+                </RadzenRow>
+            </RadzenCard>
+        </div>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new dashboard.
-
+        <div class="container-fluid mt-3">
+            <RadzenCard>
+                <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Workouts </RadzenText>
+                <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (30-day moving average) </RadzenText>
+                <RadzenDataList WrapItems="false" AllowPaging="false" Data="workoutsAverages"
+                            TItem="KeyValuePair<int, List<AverageResults>>">
+                    <Template Context="workoutAverageKV">
+                        <DashboardWorkout WorkoutId="@workoutAverageKV.Key" Averages="@workoutAverageKV.Value"></DashboardWorkout>
+                    </Template>
+                </RadzenDataList>
+            </RadzenCard>
+        </div>
+    }
+</RadzenCard>
 @code {
+    bool loading = true;
 
+    List<AverageResults>? measurementsAverages = null;
+    AverageResults? weightAverages = null;
+    AverageResults? waistAverages = null;
+    AverageResults? bfAverages = null;
+    List<AverageResults>? mealsAverages = null;
+    Dictionary<int, List<AverageResults>>? workoutsAverages = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            measurementsAverages = await MeasurementService.GetAverages(DateTime.Now);
+
+            mealsAverages = await MealService.GetAverages(DateTime.Now);
+            weightAverages = measurementsAverages[0];
+            waistAverages = measurementsAverages[1];
+            bfAverages = measurementsAverages[2];
+
+            workoutsAverages = await TrackedWorkoutService.GetAverages(DateTime.Now);
+            loading = false;
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+    protected string weightIconTitle()
+    {
+        string result = string.Empty;
+        if (weightAverages != null)
+        {
+            if (weightAverages.ChangeDirection == "up")
+            {
+                result = $"{weightAverages.Difference}kg up from previous average";
+            }
+            else if (weightAverages.ChangeDirection == "down")
+            {
+                result = $"{weightAverages.Difference}kg down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
+
+    protected string waistIconTitle()
+    {
+        string result = string.Empty;
+        if (waistAverages != null)
+        {
+            if (waistAverages.ChangeDirection == "up")
+            {
+                result = $"{waistAverages.Difference}cm up from previous average";
+            }
+            else if (waistAverages.ChangeDirection == "down")
+            {
+                result = $"{waistAverages.Difference}cm down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
+
+    protected string bfIconTitle()
+    {
+        string result = string.Empty;
+        if (bfAverages != null)
+        {
+            if (bfAverages.ChangeDirection == "up")
+            {
+                result = $"{bfAverages.Difference}% up from previous average";
+            }
+            else if (bfAverages.ChangeDirection == "down")
+            {
+                result = $"{bfAverages.Difference}% down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
+
+    protected string caloriesIconTitle()
+    {
+        string result = string.Empty;
+        if (mealsAverages[0] != null)
+        {
+            if (mealsAverages[0].ChangeDirection == "up")
+            {
+                result = $"{mealsAverages[0].Difference}kcals up from previous average";
+            }
+            else if (mealsAverages[0].ChangeDirection == "down")
+            {
+                result = $"{mealsAverages[0].Difference}kcals down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
+
+    protected string macroIconTitle(int index)
+    {
+        string result = string.Empty;
+        if (mealsAverages != null)
+        {
+            if (mealsAverages[index].ChangeDirection == "up")
+            {
+                result = $"{mealsAverages[index].Difference}g up from previous average";
+            }
+            else if (mealsAverages[index].ChangeDirection == "down")
+            {
+                result = $"{mealsAverages[index].Difference}g down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
 }

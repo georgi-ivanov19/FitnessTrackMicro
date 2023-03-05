@@ -11,5 +11,6 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
         Task GetSingleWorkout(int id);
         Task GetLatestCompleted(int parentWorkoutId);
         Task UpdateTrackedWorkout(TrackedWorkout workout, bool finish = false);
+        Task<Dictionary<int, List<AverageResults>>> GetAverages(DateTime date);
     }
 }

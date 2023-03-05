@@ -1,0 +1,110 @@
+{
+  "6": [
+    {
+      "currentAverage": 8559,
+      "currentCount": 1,
+      "previousAverage": 8005,
+      "previousCount": 0,
+      "difference": 554,
+      "changeDirection": "up"
+    },
+    {
+      "currentAverage": 74590000,
+      "currentCount": 1,
+      "previousAverage": 1641210000,
+      "previousCount": 0,
+      "difference": 1566620000,
+      "changeDirection": "down"
+    }
+  ],
+  "7": [
+    {
+      "currentAverage": null,
+      "currentCount": 0,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    },
+    {
+      "currentAverage": null,
+      "currentCount": 0,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    }
+  ],
+  "8": [
+    {
+      "currentAverage": null,
+      "currentCount": 0,
+      "previousAverage": 8750,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    },
+    {
+      "currentAverage": null,
+      "currentCount": 0,
+      "previousAverage": 107428000,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    }
+  ],
+  "9": [
+    {
+      "currentAverage": null,
+      "currentCount": 0,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    },
+    {
+      "currentAverage": null,
+      "currentCount": 0,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    }
+  ],
+  "10": [
+    {
+      "currentAverage": 132.78,
+      "currentCount": 9,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    },
+    {
+      "currentAverage": 13696111.11,
+      "currentCount": 9,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    }
+  ],
+  "32": [
+    {
+      "currentAverage": 1,
+      "currentCount": 1,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    },
+    {
+      "currentAverage": 10425000,
+      "currentCount": 1,
+      "previousAverage": null,
+      "previousCount": 0,
+      "difference": 0,
+      "changeDirection": "non-deterministic"
+    }
+  ]
+}

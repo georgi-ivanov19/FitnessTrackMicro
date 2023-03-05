@@ -132,5 +132,13 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             Console.WriteLine($"getting all completed for workout {parentWorkoutId}");
         }
+
+        public async Task<Dictionary<int, List<AverageResults>>> GetAverages(DateTime date)
+        {
+            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"sample-data/workoutAverages.json");
+            if (result == null)
+                throw new Exception("No results found");
+            return result;
+        }
     }
 }

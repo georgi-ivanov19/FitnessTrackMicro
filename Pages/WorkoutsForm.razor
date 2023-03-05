@@ -2,16 +2,22 @@
 @using FitnessTrackMicro.Services.WorkoutService;
 @inject IWorkoutService WorkoutService;
 
-<EditForm Model="w" OnSubmit="HandleSubmit">
+<RadzenTemplateForm TItem="Workout" Data="@w" Submit="HandleSubmit">
     <div>
-        <label for="name"> Name </label>
-        <InputText id="name" @bind-Value="w.Name" class="form-control"></InputText>
-        <label for="dayOfWeek"> Day of Week </label>
-        <RadzenDropDown Placeholder="Day" id="type" Data=@daysOfWeek @bind-Value="w.DayOfWeek" class="form-control"></RadzenDropDown>
+        <div class="m-2">
+            <label for="name"> Name </label>
+            <RadzenTextBox Name="Name" id="name" @bind-Value="w.Name" class="form-control"></RadzenTextBox>
+            <RadzenRequiredValidator Component="Name" Text="Workout name is required" Style="position: relative" />
+        </div>
+        <div class="m-2">
+            <label for="dow"> Day of Week </label>
+            <RadzenDropDown Name="DOW" id="dow" Data=@daysOfWeek @bind-Value="w.DayOfWeek" class="form-control"></RadzenDropDown>
+            <RadzenRequiredValidator Component="DOW" Text="Field is required" Style="position: relative" />
+        </div>
     </div>
     <br />
-    <button type="submit" class="btn btn-primary">@btnText</button>
-</EditForm>
+    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText</RadzenButton>
+</RadzenTemplateForm>
 
 
 @code {

@@ -1,0 +1,26 @@
+[
+  {
+    "currentAverage": 85.55,
+    "currentCount": 2,
+    "previousAverage": 85.29,
+    "previousCount": 0,
+    "difference": 0.26,
+    "changeDirection": "up"
+  },
+  {
+    "currentAverage": 84.87,
+    "currentCount": 3,
+    "previousAverage": null,
+    "previousCount": 0,
+    "difference": 0,
+    "changeDirection": "non-deterministic"
+  },
+  {
+    "currentAverage": null,
+    "currentCount": 0,
+    "previousAverage": 21,
+    "previousCount": 0,
+    "difference": 0,
+    "changeDirection": "non-deterministic"
+  }
+]

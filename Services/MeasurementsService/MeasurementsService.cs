@@ -101,5 +101,13 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
             await _localStorage.SetItemAsync("Measurements", Measurements);
         }
+
+        public async Task<List<AverageResults>> GetAverages(DateTime date)
+        {
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"sample-data/measurementAverages.json");
+            if (result == null)
+                throw new Exception("No results found");
+            return result;
+        }
     }
 }

@@ -1,0 +1,88 @@
+﻿@using FitnessTrackMicro.Models;
+@using FitnessTrackMicro.Services.WorkoutService;
+@inject IWorkoutService WorkoutService;
+
+@if (workout != null)
+{
+    <RadzenRow>
+        <RadzenColumn Style="display: flex; flex-direction: column; justify-content: center;">
+            <RadzenText TextStyle="TextStyle.H5" class="d-inline"> @workout.Name </RadzenText>
+        </RadzenColumn>
+        <RadzenColumn>
+            <DashboardStatistic Averages="@Averages[0]" NumberOfDays=30 Title="Volume (kg)" TrendIconTitle="@volumeIconTitle()"></DashboardStatistic>
+        </RadzenColumn>
+        <RadzenColumn>
+            <DashboardStatistic Averages="@Averages[1]" NumberOfDays=30 Title="Duration (h:mm)" IsDuration=true TrendIconTitle="@durationIconTitle()"></DashboardStatistic>
+        </RadzenColumn>
+        <RadzenColumn>
+            <div>
+                <RadzenText class="d-inline" TextStyle="TextStyle.Subtitle1"> Workouts </RadzenText>
+            </div>
+            <div>
+
+                <span class="h1 mb-3 me-2">
+                    @Averages[0].CurrentCount
+                </span>
+            </div>
+        </RadzenColumn>
+
+    </RadzenRow>
+}
+
+
+@code {
+    [Parameter]
+    public int WorkoutId { get; set; }
+    [Parameter]
+    public List<AverageResults> Averages { get; set; }
+
+    protected Workout? workout = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // workout = await 
+        WorkoutService.GetSingleWorkout(WorkoutId);
+    }
+
+    protected string volumeIconTitle()
+    {
+        string result = string.Empty;
+        if (Averages != null)
+        {
+            if (Averages[0].ChangeDirection == "up")
+            {
+                result = $"{Averages[0].Difference}kg up from previous average";
+            }
+            else if (Averages[0].ChangeDirection == "down")
+            {
+                result = $"{Averages[0].Difference}kg down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
+
+    protected string durationIconTitle()
+    {
+        string result = string.Empty;
+        if (Averages != null)
+        {
+            if (Averages[1].ChangeDirection == "up")
+            {
+                result = $"{Math.Floor(TimeSpan.FromMicroseconds((double)Averages[1].Difference).TotalMinutes)} minutes up from previous average";
+            }
+            else if (Averages[1].ChangeDirection == "down")
+            {
+                result = $"{Math.Floor(TimeSpan.FromMicroseconds((double)Averages[1].Difference).TotalMinutes)} minutes down from previous average";
+            }
+            else
+            {
+                result = "No change from previous average";
+            }
+        }
+        return result;
+    }
+}

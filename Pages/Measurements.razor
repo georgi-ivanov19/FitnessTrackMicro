@@ -9,62 +9,61 @@
 
 <PageTitle> Measurements </PageTitle>
 
-@* TODO: LOADING SKELETON
-    @if (loading)
-    {
-    <h3>Loading...</h3>
-    }
-    else
-    {*@
+@if (loading)
+{
+    <RadzenProgressBar Value="100" ShowValue="false" Mode="Radzen.ProgressBarMode.Indeterminate" />
+}
+else
+{
+    <RadzenCard class="m-2">
+        <RadzenTabs @bind-SelectedIndex=@selectedIndex>
+            <Tabs>
+                @foreach (var type in measurementTypes)
+                {
+                    <RadzenTabsItem Text=@type>
+                        @if (measurementsByType(type).Count() == 0)
+                        {
+                            <RadzenChart>
+                                <RadzenLegend Visible="false" />
+                                <RadzenText TextStyle="TextStyle.H5" class="d-inline">
+                                    No entries for this measurement type
+                                </RadzenText>
+                                <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium"
+                                  ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
+                            </RadzenChart>
+                        }
+                        else
+                        {
+                            <RadzenChart class="mb-5">
+                                <RadzenLegend Visible="false" />
+                                <RadzenLineSeries Smooth="false" Data="measurementsByType(type)" CategoryProperty="Date" Title=@type
+                                      ValueProperty="Value">
+                                    <ChildContent>
+                                        <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
+                                        <RadzenSeriesDataLabels />
+                                    </ChildContent>
+                                </RadzenLineSeries>
+                            </RadzenChart>
+                            <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Entries </RadzenText>
+                            <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
 
-<RadzenCard class="m-2">
-    <RadzenTabs @bind-SelectedIndex=@selectedIndex>
-        <Tabs>
-            @foreach (var type in measurementTypes)
-            {
-                <RadzenTabsItem Text=@type>
-                    @if (measurementsByType(type).Count() == 0)
-                    {
-                        <RadzenChart>
-                            <RadzenLegend Visible="false" />
-                            <RadzenText TextStyle="TextStyle.H5" class="d-inline">
-                                No entries for this measurement type
-                            </RadzenText>
-                            <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium"
-                                        ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
-                        </RadzenChart>
-                    }
-                    else
-                    {
-                        <RadzenChart class="mb-5">
-                            <RadzenLegend Visible="false" />
-                            <RadzenLineSeries Smooth="false" Data="measurementsByType(type)" CategoryProperty="Date" Title=@type
-                                            ValueProperty="Value">
-                                <ChildContent>
-                                    <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
-                                    <RadzenSeriesDataLabels />
-                                </ChildContent>
-                            </RadzenLineSeries>
-                        </RadzenChart>
-                        <RadzenText TextStyle="TextStyle.H5" class="d-inline"> Entries </RadzenText>
-                        <RadzenButton Click=@(args => ShowForm(null, type)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
-
-                        <RadzenDataList WrapItems="false" AllowPaging="true" PageSize="5" Data="measurementsByType(type)"
+                            <RadzenDataList WrapItems="false" AllowPaging="true" PageSize="5" Data="measurementsByType(type)"
                                 TItem="Measurement">
-                            <Template Context="measurement">
-                                <RadzenIcon Icon="calendar_today" Style="font-size: 16px" />
-                                <b>@measurement.Date.ToString("dd MMM yyyy")</b> -
-                                <span><b> @measurement.Value</b>@measurement.Unit </span>
-                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(measurement.Id)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
-                                <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeasurement(measurement.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />
-                            </Template>
-                        </RadzenDataList>
-                    }
-                </RadzenTabsItem>
-            }
-        </Tabs>
-    </RadzenTabs>
-</RadzenCard>
+                                <Template Context="measurement">
+                                    <RadzenIcon Icon="calendar_today" Style="font-size: 16px" />
+                                    <b>@measurement.Date.ToString("dd MMM yyyy")</b> -
+                                    <span><b> @measurement.Value</b>@measurement.Unit </span>
+                                    <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(measurement.Id)) Icon="edit" ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" class="mb-2" />
+                                    <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteMeasurement(measurement.Id)) Icon="delete" ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" class="mb-2" />
+                                </Template>
+                            </RadzenDataList>
+                        }
+                    </RadzenTabsItem>
+                }
+            </Tabs>
+        </RadzenTabs>
+    </RadzenCard>
+}
 @code {
     private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
     int selectedIndex = 0;
@@ -78,7 +77,7 @@
         try
         {
             await MeasurementService.GetMeasurements();
-            //loading = false;
+            loading = false;
 
         }
         catch (AccessTokenNotAvailableException exception)
@@ -91,12 +90,6 @@
     private IEnumerable<Measurement> measurementsByType(string type)
     {
         return MeasurementService.GetMeasurementsByType(type);
-    }
-
-
-    void OnChange(int index)
-    {
-        //Console.WriteLine($"Tab with index {index} was selected.");
     }
 
     private async Task ShowForm(int? id, string? type = null)
