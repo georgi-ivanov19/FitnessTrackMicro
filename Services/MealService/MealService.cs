@@ -6,6 +6,8 @@ using FitnessTrackMicro.Pages;
 using FitnessTrackMicro.Models;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using System.Text;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace FitnessTrackMicro.Services.MealService
 {
@@ -14,13 +16,15 @@ namespace FitnessTrackMicro.Services.MealService
         private readonly HttpClient _http;
         private readonly NavigationManager _navManager;
         private ILocalStorageService _localStorage;
+        private AuthenticationStateProvider _auth;
 
         public List<Meal> Meals { get; set; } = new List<Meal>();
-        public MealService(HttpClient http, NavigationManager navManager, ILocalStorageService localStorage)
+        public MealService(HttpClient http, NavigationManager navManager, ILocalStorageService localStorage, AuthenticationStateProvider AuthenticationStateProvider)
         {
             _http = http;
             _navManager = navManager;
             _localStorage = localStorage;
+            _auth = AuthenticationStateProvider;
         }
         public async Task GetMeals()
         {
@@ -32,8 +36,8 @@ namespace FitnessTrackMicro.Services.MealService
             }
             else
             {
-                result = await _http.GetFromJsonAsync<List<Meal>>("sample-data/meals.json");
-                await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
+                result = await _http.GetFromJsonAsync<List<Meal>>("https://localhost:49157/api/Meals");
+                //await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
             }
 
             if (result != null)
@@ -44,63 +48,72 @@ namespace FitnessTrackMicro.Services.MealService
 
         public async Task CreateMeal(Meal meal)
         {
-            //var result = await _http.PostAsJsonAsync("api/meal", meal);
-            //
-            //// TODO: null check
-            
             Console.WriteLine($"Creating a meal {meal.Id}");
-            var result = await _http.PostAsJsonAsync("https://localhost:49153/api/Meals", meal);
+            var result = await _http.PostAsJsonAsync("https://localhost:49157/api/Meals", meal);
             var response = await result.Content.ReadFromJsonAsync<Meal>();
             Meals.Add(response);
-            //await _localStorage.SetItemAsync("Meals", Meals);
+            await _localStorage.SetItemAsync("Meals", Meals);
             _navManager.NavigateTo("meals");
         }
 
         public async Task DeleteMeal(string id)
         {
+            var authenticationState = await _auth.GetAuthenticationStateAsync();
+            var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
+            //dynamic httpBody = new System.Dynamic.ExpandoObject();
+            //httpBody.mealId = id;
+            //httpBody.applicationUserId = userId;
 
-            //await _http.DeleteAsync($"api/meal/{id}");
-            Console.WriteLine($"Deleting Meal {id}");
+            //var request = new HttpRequestMessage
+            //{
+
+            //    Method = HttpMethod.Delete,
+            //    RequestUri = new Uri("https://localhost:49155/api/Meals"),
+            //    Content = new StringContent(JsonConvert.SerializeObject(httpBody), Encoding.UTF8, "application/json")
+
+            //};
+            await _http.DeleteAsync($"https://localhost:49157/api/Meals?mealId={id}&applicationUserId={userId}");
+            //await _http.SendAsync(request);
+
             Meals.RemoveAt(Meals.FindIndex(m => m.Id == id));
-            await _localStorage.SetItemAsync("Meals", Meals);
+            // await _localStorage.SetItemAsync("Meals", Meals);
         }
 
 
-        public async Task GetSingleMeal(string id)
+        public async Task<Meal> GetSingleMeal(string id)
         {
-            //var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
-            //Meal? result;
-            //if (mealsInLocalStorage)
+            var authenticationState = await _auth.GetAuthenticationStateAsync();
+            var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
+            //dynamic httpBody = new System.Dynamic.ExpandoObject();
+
+            //httpBody.applicationUserId = userId;
+            //var request = new HttpRequestMessage
             //{
-            //    var meals = await _localStorage.GetItemAsync<List<Meal>>("Meals");
-            //    result = meals.First(m => m.Id == id);
-            //}
-            //else
-            //{
-            //    result = await _http.GetFromJsonAsync<Meal>($"api/meal/{id}");
-            //}
-            //if (result != null)
-            //{
-            //    return result;
-            //}
-            //throw new Exception("Meal not found");
-            Console.WriteLine($"Getting Meal {id}");
+            //    Method = HttpMethod.Get,
+            //    RequestUri = new Uri($"https://localhost:49155/api/Meals/{id}"),
+            //    Content = new StringContent(JsonConvert.SerializeObject(httpBody), Encoding.UTF8, "application/json")
+            //};
+            //await _http.SendAsync(request);
+            var response = await _http.GetFromJsonAsync<Meal>($"https://localhost:49157/api/Meals/{id}?applicationUserId={userId}");
+            return response;
+            // Console.WriteLine($"Getting Meal {id}");
         }
 
         public async Task UpdateMeal(Meal meal)
         {
-            //var httpResult = await _http.PutAsJsonAsync($"api/meal/{meal.Id}", meal);
-            //var response = await httpResult.Content.ReadFromJsonAsync<Meal>();
+            var httpResult = await _http.PutAsJsonAsync($"https://localhost:49157/api/Meals/{meal.Id}", meal);
+            var response = await httpResult.Content.ReadFromJsonAsync<Meal>();
 
             //// TODO: null check
-            //int index = Meals.FindIndex(m => m.Id == meal.Id);
-            //if (index != -1)
-            //{
-            //    Meals[index] = meal;
-            //    await _localStorage.SetItemAsync("Meals", Meals);
-            //}
+            int index = Meals.FindIndex(m => m.Id == meal.Id);
+            if (index != -1)
+            {
+                Meals[index] = meal;
+                await _localStorage.SetItemAsync("Meals", Meals);
+            }
             Console.WriteLine($"Updating meal {meal.Id}");
             _navManager.NavigateTo("meals");
+
         }
 
         public IEnumerable<Meal> GetMealsByDate(DateTime date)

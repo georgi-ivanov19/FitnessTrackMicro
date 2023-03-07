@@ -7,7 +7,7 @@ namespace FitnessTrackMicro.Services.MealService
     List<Meal> Meals { get; set; }
 
     Task GetMeals();
-        Task GetSingleMeal(string id);
+        Task<Meal> GetSingleMeal(string id);
         Task CreateMeal(Meal meal);
         Task UpdateMeal(Meal meal);
         Task DeleteMeal(string id);
