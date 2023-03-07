@@ -1,33 +1,39 @@
 ﻿@using FitnessTrackMicro.Models;
 @using FitnessTrackMicro.Services.MeasurementsService;
 @inject IMeasurementsService MeasurementsService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <RadzenTemplateForm TItem="Measurement" Data="@m" Submit="HandleSubmit">
     <div>
         <div class="m-2">
             <label for="type"> Type </label>
-            <RadzenDropDown Name="Type" id="type" Data=@measurementTypes @bind-Value="m.Type" class="form-control"></RadzenDropDown>
+            <RadzenDropDown Name="Type" id="type" Data=@measurementTypes @bind-Value="m.Type" class="form-control">
+            </RadzenDropDown>
             <RadzenRequiredValidator Component="Type" Text="Measurement type is required" Style="position: relative" />
         </div>
         <div class="m-2">
             <label for="value"> Value </label>
             <RadzenNumeric id="value" Name="Value" @bind-Value="m.Value" class="form-control"></RadzenNumeric>
-            <RadzenNumericRangeValidator Component="Value" Min="0.01" Text="Value must be bigger than 0" Style="position: relative" />
+            <RadzenNumericRangeValidator Component="Value" Min="0.01" Text="Value must be bigger than 0"
+                Style="position: relative" />
         </div>
         <div class="m-2">
             <label for="unit" style="align-self: center;"> Unit </label>
-            <RadzenDropDown Placeholder="Unit" Name="Unit" id="unit" Data=@measurementUnits @bind-Value="m.Unit" class="form-control"></RadzenDropDown>
+            <RadzenDropDown Placeholder="Unit" Name="Unit" id="unit" Data=@measurementUnits @bind-Value="m.Unit"
+                class="form-control"></RadzenDropDown>
             <RadzenRequiredValidator Component="Unit" Text="Measurement unit is required" Style="position: relative" />
         </div>
 
         <div class="m-2">
             <label for="date"> Date </label>
-            <RadzenDatePicker TValue="DateTime" DateFormat="dd MMM yyyy" Name="mDate" id="date" @bind-Value="m.Date" class="w-100"></RadzenDatePicker>
+            <RadzenDatePicker TValue="DateTime" DateFormat="dd MMM yyyy" Name="mDate" id="date" @bind-Value="m.Date"
+                class="w-100"></RadzenDatePicker>
             <RadzenRequiredValidator Component="mDate" Text="Measurement date is required" Style="position: relative" />
         </div>
     </div>
     <br />
-    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText</RadzenButton>
+    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText
+    </RadzenButton>
 </RadzenTemplateForm>
 
 
