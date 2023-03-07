@@ -5,6 +5,7 @@ using Blazored.LocalStorage.StorageOptions;
 using FitnessTrackMicro.Pages;
 using FitnessTrackMicro.Models;
 using Microsoft.AspNetCore.Components;
+using Newtonsoft.Json;
 
 namespace FitnessTrackMicro.Services.MealService
 {
@@ -44,15 +45,18 @@ namespace FitnessTrackMicro.Services.MealService
         public async Task CreateMeal(Meal meal)
         {
             //var result = await _http.PostAsJsonAsync("api/meal", meal);
-            //var response = await result.Content.ReadFromJsonAsync<Meal>();
+            //
             //// TODO: null check
-            //Meals.Add(response);
+            
+            Console.WriteLine($"Creating a meal {meal.Id}");
+            var result = await _http.PostAsJsonAsync("https://localhost:49153/api/Meals", meal);
+            var response = await result.Content.ReadFromJsonAsync<Meal>();
+            Meals.Add(response);
             //await _localStorage.SetItemAsync("Meals", Meals);
-            Console.WriteLine($"Creating a meal {meal.Id}, {meal}");
             _navManager.NavigateTo("meals");
         }
 
-        public async Task DeleteMeal(int id)
+        public async Task DeleteMeal(string id)
         {
 
             //await _http.DeleteAsync($"api/meal/{id}");
@@ -62,7 +66,7 @@ namespace FitnessTrackMicro.Services.MealService
         }
 
 
-        public async Task GetSingleMeal(int id)
+        public async Task GetSingleMeal(string id)
         {
             //var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
             //Meal? result;
@@ -112,10 +116,10 @@ namespace FitnessTrackMicro.Services.MealService
             double totalFats = 0;
             foreach (var meal in meals)
             {
-                totalCalories += meal.TotalCalories;
-                totalProtein += meal.Protein;
-                totalCarbohydrates += meal.Carbohydrates;
-                totalFats += meal.Fats;
+                totalCalories += (double)meal.TotalCalories;
+                totalProtein += (double)meal.Protein;
+                totalCarbohydrates += (double)meal.Carbohydrates;
+                totalFats += (double)meal.Fats;
             }
 
             return new MealMacros(totalCalories, totalProtein, totalCarbohydrates, totalFats);

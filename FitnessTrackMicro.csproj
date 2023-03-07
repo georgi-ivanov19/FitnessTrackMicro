@@ -11,10 +11,28 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Radzen.Blazor" Version="4.7.2" />
   </ItemGroup>
 	<ItemGroup>
 		<TrimmerRootAssembly Include="Microsoft.Authentication.WebAssembly.Msal" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\DesignTimeBuild\.dtbcache.v2" />
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\FileContentIndex\3ff17b68-d0e1-4351-9a84-e236665bfd45.vsidx" />
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\FileContentIndex\8e33354a-238c-4952-b60d-36ed40001d73.vsidx" />
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\FileContentIndex\ef56a54a-2ffe-4af1-b0b4-459ffb53a492.vsidx" />
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\FileContentIndex\fbc943d4-216f-4409-b8b0-9bfdb0cf4a8c.vsidx" />
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\FileContentIndex\read.lock" />
+	  <None Include="APIs\MealsAPI\.vs\MealsAPI\v17\.futdcache.v2" />
+	  <None Include="APIs\MealsAPI\.vs\ProjectEvaluation\mealsapi.metadata.v5.2" />
+	  <None Include="APIs\MealsAPI\.vs\ProjectEvaluation\mealsapi.projects.v5.2" />
+	  <None Include="APIs\MealsAPI\MealsAPI.csproj" />
+	  <None Include="APIs\MealsAPI\MealsAPI.csproj.user" />
+	  <None Include="APIs\MealsAPI\MealsAPI.sln" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="APIs\MealsAPI\.vs\MealsAPI\FileContentIndex\merges\" />
 	</ItemGroup>
 
 

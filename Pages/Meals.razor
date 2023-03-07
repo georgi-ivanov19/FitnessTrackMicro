@@ -219,16 +219,15 @@
             await MealService.GetMeals();
             dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
             date = DateTime.Today;
-            loading = false;
+            loading = false;        
         }
         catch (AccessTokenNotAvailableException exception)
         {
             exception.Redirect();
         }
-
     }
 
-    private async Task ShowForm(int? id, DateTime date)
+    private async Task ShowForm(string? id, DateTime date)
     {
         var title = id == null ? "Add Meal" : "Edit Meal";
         await DialogService.OpenAsync<MealForm>(title,
@@ -244,7 +243,7 @@
         dayMeals = MealService.Meals.Where(m => m.Date == date.Date).ToList();
     }
 
-    private async Task DeleteMeal(int id)
+    private async Task DeleteMeal(string id)
     {
         // await MealService.DeleteMeal(id);
         Console.WriteLine($"Deleting meal {id}");

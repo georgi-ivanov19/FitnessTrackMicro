@@ -76,6 +76,8 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //Measurements.Add(response);
             //await _localStorage.SetItemAsync("Measurements", Measurements);
             Console.WriteLine($"creating measurement {measurement.Id}, {measurement}");
+            var result = await _http.PostAsJsonAsync("https://localhost:49153/api/Measurement", measurement);
+            Console.WriteLine(result.Content.ToString());
             _navManager.NavigateTo("measurements");
         }
 
