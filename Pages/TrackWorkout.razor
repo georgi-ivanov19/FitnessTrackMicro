@@ -1,0 +1,184 @@
+﻿@page "/track/{id:int}"
+
+@using FitnessTrackMicro.Services.ExerciseSetService;
+@using FitnessTrackMicro.Models;
+@using FitnessTrackMicro.Services.TrackedWorkoutService;
+@using FitnessTrackMicro.Services.WorkoutService;
+
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+
+@inject ITrackedWorkoutService TrackedWorkoutService;
+@inject IWorkoutService WorkoutService;
+@inject IExerciseSetService ExerciseSetService;
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavManager
+
+<PageTitle> Tracking @parentWorkout.Name </PageTitle>
+<RadzenCard>
+    <RadzenText TextStyle="TextStyle.H4" class="d-inline me-1"> Tracking: @parentWorkout.Name </RadzenText>
+    <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
+                  ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" style="vertical-align: top;" />
+
+    <div class="top-bar">
+        <RadzenText TextStyle="TextStyle.Overline"> Progress </RadzenText>
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Success" Value="setsCompleted" Max="totalSets" class="my-2" />
+        <RadzenText TextStyle="TextStyle.Overline"> @($"Sets Completed: {setsCompleted}/{totalSets}") </RadzenText>
+        <RadzenText Class="ms-5" TextStyle="TextStyle.Overline"> Total Volume <b>@trackedWorkout.TotalVolume</b> (kg) </RadzenText>
+    </div>
+    <div class="my-2">
+        <WorkoutNotes workout="trackedWorkout" disabled=false tracking=true></WorkoutNotes>
+    </div>
+    @foreach (var item in parentWorkout.Exercises)
+    {
+        <RadzenText TextStyle="TextStyle.H5"> @item.Name </RadzenText>
+        <RadzenRow>
+            <RadzenColumn Size="4">
+                <RadzenText TextStyle="TextStyle.Subtitle1"> Previous sets </RadzenText>
+            </RadzenColumn>
+            <RadzenColumn Size="4">
+                <RadzenText TextStyle="TextStyle.Subtitle1"> Current sets </RadzenText>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow>
+            <RadzenColumn Size="1">
+                <RadzenText TextStyle="TextStyle.Subtitle2"> Weight </RadzenText>
+            </RadzenColumn>
+            <RadzenColumn Size="1">
+                <RadzenText TextStyle="TextStyle.Subtitle2"> Reps </RadzenText>
+            </RadzenColumn>
+            <RadzenColumn Size="2" />
+            <RadzenColumn Size="1">
+                <RadzenText TextStyle="TextStyle.Subtitle2"> Weight </RadzenText>
+            </RadzenColumn>
+            <RadzenColumn Size="1">
+                <RadzenText TextStyle="TextStyle.Subtitle2"> Reps </RadzenText>
+            </RadzenColumn>
+            <RadzenColumn Size="1">
+            </RadzenColumn>
+        </RadzenRow>
+        foreach (var zipped in zippedSetsForExercise(trackedWorkout.ExerciseSetsCompleted, item.Id))
+        {
+            <RadzenRow>
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Weight </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenText TextStyle="TextStyle.Button"> @zipped.Item1.Reps </RadzenText>
+                </RadzenColumn>
+                <RadzenColumn Size="2" />
+                <RadzenColumn Size="1">
+                    <RadzenNumeric TValue="double?" @bind-Value=@zipped.Item2.Weight Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 100px;"></RadzenNumeric>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenNumeric TValue="int?" @bind-Value=@zipped.Item2.Reps Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 64px;"></RadzenNumeric>
+                </RadzenColumn>
+                <RadzenColumn Size="1">
+                    <RadzenCheckBox TValue="bool" Disabled="zipped.Item2.Weight == null || zipped.Item2.Reps == null"
+                            Change="@(args => SetCompleted(args, zipped.Item2))" @bind-Value=@zipped.Item2.IsComplete style="vertical-align: unset;"></RadzenCheckBox>
+                </RadzenColumn>
+            </RadzenRow>
+        }
+    }
+    <hr class="my-3 w-100" />
+
+    <div style="text-align: right;">
+        <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
+                      ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
+    </div>
+
+</RadzenCard>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    TrackedWorkout trackedWorkout = new TrackedWorkout();
+    TrackedWorkout? latestCompleted = null;
+    Workout parentWorkout = new Workout();
+    int setsCompleted = 0;
+    int totalSets = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        bool workoutIsInLocalStorage = await localStorage.ContainKeyAsync($"TrackedWorkout{Id}");
+        if (workoutIsInLocalStorage)
+        {
+            trackedWorkout = await localStorage.GetItemAsync<TrackedWorkout>($"TrackedWorkout{Id}");
+        }
+        else
+        {
+            trackedWorkout = await TrackedWorkoutService.GetSingleWorkout(Id);
+            await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
+        }
+
+        try
+        {
+            latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.WorkoutId);
+        }
+        catch (HttpRequestException e)
+        {
+            if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                latestCompleted = null;
+            }
+        }
+        parentWorkout = await WorkoutService.GetSingleWorkout(trackedWorkout.WorkoutId);
+        setsCompleted = trackedWorkout.ExerciseSetsCompleted.Count(s => s.IsComplete == true);
+        totalSets = trackedWorkout.ExerciseSetsCompleted.Count;
+    }
+
+    private async Task SetCompleted(bool value, ExerciseSet set)
+    {
+        trackedWorkout.TotalVolume += (double)set.Weight! * (double)set.Reps!;
+        var setIndex = trackedWorkout.ExerciseSetsCompleted.FindIndex(s => s.Id == set.Id);
+        trackedWorkout.ExerciseSetsCompleted[setIndex] = set;
+        setsCompleted = trackedWorkout.ExerciseSetsCompleted.Count(s => s.IsComplete == true);
+        await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
+    }
+
+    private async Task FinishWorkout(TrackedWorkout w)
+    {
+        w.IsCompleted = true;
+        w.EndTime = DateTime.Now;
+
+        await TrackedWorkoutService.UpdateTrackedWorkout(w, true);
+        await localStorage.RemoveItemAsync($"TrackedWorkout{w.Id}");
+        NavManager.NavigateTo($"workout/{w.WorkoutId}");
+    }
+
+    private List<ExerciseSet> latestSetsForExercise(int exId)
+    {
+        bool anyNewExercises = false;
+        foreach(var item in parentWorkout.Exercises)
+        {
+            if(latestCompleted != null && latestCompleted.ExerciseSetsCompleted.Where(e => e.ExerciseId == item.Id).Count() == 0)
+            {
+                anyNewExercises = true;
+            }
+        }
+        if (latestCompleted == null || anyNewExercises)
+        {
+            latestCompleted = new TrackedWorkout();
+            foreach (var item in parentWorkout.Exercises)
+            {
+                for (int i = 0; i < item.DefaultNumberOfSets; i++)
+                {
+                    var setToAdd = new ExerciseSet();
+                    setToAdd.ExerciseId = item.Id;
+                    latestCompleted.ExerciseSetsCompleted.Add(setToAdd);
+                }
+            }
+        }
+        return latestCompleted.ExerciseSetsCompleted.Where(set => set.ExerciseId == exId).ToList();
+    }
+
+    private List<ExerciseSet> currentSetsForExercise(List<ExerciseSet> es, int exId)
+    {
+        return es.Where(e => e.ExerciseId == exId).ToList();
+    }
+
+    private List<Tuple<ExerciseSet, ExerciseSet>> zippedSetsForExercise(List<ExerciseSet> es, int exId)
+    {
+        return latestSetsForExercise(exId).Zip(currentSetsForExercise(trackedWorkout.ExerciseSetsCompleted, exId), (first, second) => Tuple.Create<ExerciseSet, ExerciseSet>(first, second)).ToList();
+    }
+}

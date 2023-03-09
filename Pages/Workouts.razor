@@ -11,6 +11,7 @@
 @inject IExerciseSetService ExerciseSetService;
 @inject NavigationManager NavManager;
 @inject Radzen.DialogService DialogService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <RadzenCard>
     @if (loading)
@@ -72,7 +73,12 @@
     {
         try
         {
-            await WorkoutService.GetWorkouts();
+            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
+            if (userId != null)
+            {
+                await WorkoutService.GetWorkouts(userId);
+            }
             loading = false;
         }
         catch (AccessTokenNotAvailableException exception)

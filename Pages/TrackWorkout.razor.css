@@ -1,0 +1,12 @@
+.column {
+    text-align: center;
+}
+.top-bar {
+    position: sticky;
+    top: 0;
+    background-color: #f1f1f1;
+    z-index: 1;
+    border: 1;
+    border-radius: 10px;
+    padding: 5px;
+}

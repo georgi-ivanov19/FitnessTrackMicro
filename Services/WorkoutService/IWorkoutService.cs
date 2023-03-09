@@ -6,8 +6,8 @@ namespace FitnessTrackMicro.Services.WorkoutService
     {
         List<Workout> Workouts { get; set; }
 
-        Task GetWorkouts();
-        Task GetSingleWorkout(int id);
+        Task GetWorkouts(string userId);
+        Task<Workout> GetSingleWorkout(int id);
         Task CreateWorkout(Workout workout);
         Task UpdateWorkout(Workout workout, bool fromForm);
         Task DeleteWorkout(int id);

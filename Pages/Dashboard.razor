@@ -9,6 +9,7 @@
 @inject IMeasurementsService MeasurementService;
 @inject IMealService MealService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Dashboard</PageTitle>
 <RadzenCard>
@@ -100,15 +101,26 @@
     {
         try
         {
-            measurementsAverages = await MeasurementService.GetAverages(DateTime.Now);
+            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
+            if (userId != null)
+            {
+                // Will need user
+                measurementsAverages = await MeasurementService.GetAverages(DateTime.Now);
 
-            mealsAverages = await MealService.GetAverages(DateTime.Now);
-            weightAverages = measurementsAverages[0];
-            waistAverages = measurementsAverages[1];
-            bfAverages = measurementsAverages[2];
+                mealsAverages = await MealService.GetAverages(DateTime.Now);
+                weightAverages = measurementsAverages[0];
+                waistAverages = measurementsAverages[1];
+                bfAverages = measurementsAverages[2];
 
-            workoutsAverages = await TrackedWorkoutService.GetAverages(DateTime.Now);
-            loading = false;
+                workoutsAverages = await TrackedWorkoutService.GetAverages(userId, DateTime.Now);
+                loading = false;
+            }
+            else
+            {
+                Console.WriteLine("No User, sign in");
+            }
+            
         }
         catch (AccessTokenNotAvailableException exception)
         {

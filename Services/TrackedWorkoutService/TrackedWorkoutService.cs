@@ -20,50 +20,48 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
         }
         public List<TrackedWorkout> TrackedWorkouts { get; set; } = new List<TrackedWorkout>();
 
-        public async Task StartWorkout(Workout workout)
+        public async Task<TrackedWorkout> StartWorkout(Workout workout)
         {
 
-            //TrackedWorkout workoutToStart = new TrackedWorkout();
-            //workoutToStart.WorkoutId = workout.Id;
-            //workoutToStart.TotalVolume = 0;
-            //workoutToStart.StartTime = DateTime.Now;
+            TrackedWorkout workoutToStart = new TrackedWorkout();
+            workoutToStart.WorkoutId = workout.Id;
+            workoutToStart.TotalVolume = 0;
+            workoutToStart.StartTime = DateTime.Now;
 
-            //var result = await _http.PostAsJsonAsync($"api/trackedworkouts", workoutToStart);
-            //var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
-            //// TODO: null check  
-            //TrackedWorkouts.Add(response);
-            //await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", response);
+            var result = await _http.PostAsJsonAsync($"http://localhost:5180/api/trackedworkouts", workoutToStart);
+            var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
+            // TODO: null check  
+            TrackedWorkouts.Add(response);
+            // await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", response);
 
-            //return response;
-            Console.WriteLine($"starting a tracked workout for workout {workout.Id}");
+            return response;
         }
 
-        public async Task GetSingleWorkout(int id)
+        public async Task<TrackedWorkout> GetSingleWorkout(int id)
         {
             //var workoutInLocalStorage = await _localStorage.ContainKeyAsync($"TrackedWorkout{id}");
-            //TrackedWorkout? result;
+            TrackedWorkout? result;
             //if (workoutInLocalStorage)
             //{
             //    result = await _localStorage.GetItemAsync<TrackedWorkout>($"TrackedWorkout{id}");
             //}
             //else
             //{
-            //    result = await _http.GetFromJsonAsync<TrackedWorkout>($"api/trackedworkouts/GetWorkout/{id}");
+                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:5180/api/trackedworkouts/GetWorkout/{id}");
             //}
 
-            //if (result != null)
-            //{
-            //    return result;
-            //}
-            //throw new Exception("Workout not found");
-            Console.WriteLine($"gettign tracked workout {id}");
+            if (result != null)
+            {
+                return result;
+            }
+            throw new Exception("Workout not found");
         }
 
-        public async Task GetLatestCompleted(int parentWorkoutId)
+        public async Task<TrackedWorkout?> GetLatestCompleted(int parentWorkoutId)
         {
 
             //var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
-            //TrackedWorkout? result;
+            TrackedWorkout? result;
             //if (workoutsInLocalStorage)
             //{
             //    var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
@@ -72,27 +70,26 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-            //    result = await _http.GetFromJsonAsync<TrackedWorkout>($"api/trackedworkouts/GetLatestCompleted/{parentWorkoutId}");
+                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:5180/api/trackedworkouts/GetLatestCompleted/{parentWorkoutId}");
             //}
 
-            //if (result != null)
-            //{
-            //    return result;
-            //}
-            //return null;
-            Console.WriteLine($"getting latest completed for workout {parentWorkoutId}");
+            if (result != null)
+            {
+                return result;
+            }
+            return null;
         }
 
         public async Task UpdateTrackedWorkout(TrackedWorkout workout, bool finish = false)
         {
-            //var result = await _http.PutAsJsonAsync($"api/trackedworkouts/{workout.Id}", workout);
-            //var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
-            //int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
-            //if (index != -1)
-            //{
-            //    TrackedWorkouts[index] = workout;
-            //    await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", workout);
-            //}
+            var result = await _http.PutAsJsonAsync($"http://localhost:5180/api/trackedworkouts/{workout.Id}", workout);
+            var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
+            int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
+            if (index != -1)
+            {
+                TrackedWorkouts[index] = workout;
+                //await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", workout);
+            }
             //if (finish)
             //{
             //    var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
@@ -102,13 +99,12 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //        workouts.First(w => w.Id == workout.WorkoutId).TrackedWorkouts.Add(workout);
             //        await _localStorage.SetItemAsync("Workouts", workouts);
             //    }
-            //}          
-            Console.WriteLine($"updating tracked workout {workout.Id}, finishing: {finish}");
+            //}
         }
 
-        public async Task GetCompletedTrackedWorkouts(int parentWorkoutId)
+        public async Task<List<TrackedWorkout>> GetCompletedTrackedWorkouts(int parentWorkoutId)
         {
-            //List<TrackedWorkout>? result;
+            List<TrackedWorkout>? result;
             //var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
             //if (workoutsInLocalStorage)
             //{
@@ -118,24 +114,23 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-            //    result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"api/trackedworkouts/{parentWorkoutId}");
-            //    result = result.Where(tw => tw.IsCompleted == true).ToList();
+                result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"http://localhost:5180/api/trackedworkouts/{parentWorkoutId}");
+                result = result.Where(tw => tw.IsCompleted == true).ToList();
             //}
 
-            //if (result != null)
-            //{
-            //    return result;
-            //}
-            //else
-            //{
-            //    return new List<TrackedWorkout>();
-            //}
-            Console.WriteLine($"getting all completed for workout {parentWorkoutId}");
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                return new List<TrackedWorkout>();
+            }
         }
 
-        public async Task<Dictionary<int, List<AverageResults>>> GetAverages(DateTime date)
+        public async Task<Dictionary<int, List<AverageResults>>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"sample-data/workoutAverages.json");
+            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"http://localhost:5180/api/trackedworkouts/GetAverages?userId={userId}&Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

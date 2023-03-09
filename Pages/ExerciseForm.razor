@@ -46,6 +46,7 @@
         {
             // TODO:
             e.WorkoutId = WorkoutId;
+            Console.WriteLine(WorkoutId);
         }
         else
         {
@@ -57,7 +58,6 @@
     {
         if (Id == null)
         {
-            e.ExerciseSets = new List<ExerciseSet>();
             await ExerciseService.CreateExercise(e);
         }
         else

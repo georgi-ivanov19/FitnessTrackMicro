@@ -56,7 +56,6 @@
                               ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" />
             </Template>
         </RadzenDataList>
-
     </div>
 </RadzenCard>
 
@@ -74,9 +73,13 @@
     {
         try
         {
-            await WorkoutService.GetSingleWorkout(Id);
-            trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
-            latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
+            workout = await WorkoutService.GetSingleWorkout(Id);
+            if (workout.TrackedWorkouts.Any())
+            {
+                trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
+                if(trackedWorkouts.Count > 0)
+                    latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
+            }
             await ExerciseService.GetExercises(Id);
         }
         catch (AccessTokenNotAvailableException exception)
@@ -87,11 +90,10 @@
 
     private async void StartWorkout(Workout w)
     {
-        // var tw =
-        await TrackedWorkoutService.StartWorkout(w);
-        await ExerciseSetService.CreateExerciseSetRange(w, new TrackedWorkout());
+        var tw = await TrackedWorkoutService.StartWorkout(w);
+        await ExerciseSetService.CreateExerciseSetRange(w, tw);
         Console.WriteLine($"should navigate to track/some id");
-        // NavManager.NavigateTo($"track/{tw.Id}");
+        NavManager.NavigateTo($"track/{tw.Id}");
     }
 
     private async Task ShowForm(int? id)

@@ -7,7 +7,7 @@ namespace FitnessTrackMicro.Services.ExerciseService
         List<Exercise> Exercises { get; set; }
 
         Task GetExercises(int workoutId);
-        Task GetSingleExercise(int id);
+        Task<Exercise> GetSingleExercise(int id);
         Task CreateExercise(Exercise ex);
         Task UpdateExercise(Exercise ex);
         Task DeleteExercise(int id);

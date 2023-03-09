@@ -20,53 +20,60 @@ namespace FitnessTrackMicro.Services.ExerciseService
 
         public async Task CreateExercise(Exercise ex)
         {
-            //var result = await _http.PostAsJsonAsync("api/exercises", ex);
-            //var response = await result.Content.ReadFromJsonAsync<Exercise>();
-            //// TODO: null check
-            //Exercises.Add(response);
-            Console.WriteLine($"creating exercise {ex.Id}");
-            //TODO:
-            _navManager.NavigateTo($"workouts");
+            var result = await _http.PostAsJsonAsync("http://localhost:5180/api/exercises", ex);
+            var response = await result.Content.ReadFromJsonAsync<Exercise>();
+            // TODO: null check
+            Exercises.Add(response);
+            //var workoutsInLocalStorage = await _localStorage.ContainKeyAsync("Workouts");
+            //if (workoutsInLocalStorage)
+            //{
+            //    var workouts = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
+            //    var index = workouts.FindIndex(w => w.Id == response.WorkoutId);
+            //    if (index != -1)
+            //    {
+            //        workouts[index].Exercises.Add(response);
+            //        await _localStorage.SetItemAsync("Workouts", workouts);
+            //    }
+            //}
+            _navManager.NavigateTo($"workout/{response.WorkoutId}");
         }
 
         public async Task DeleteExercise(int id)
         {
-            //await _http.DeleteAsync($"api/Exercises/{id}");
-            //Exercises.RemoveAt(Exercises.FindIndex(r => r.Id == id));
-            Console.WriteLine($"deleting exercise {id}");
+            await _http.DeleteAsync($"http://localhost:5180/api/Exercises/{id}");
+            Exercises.RemoveAt(Exercises.FindIndex(r => r.Id == id));
+            // await _localStorage.RemoveItemAsync("Workouts");
         }
 
         public async Task GetExercises(int workoutId)
         {
-            //var result = await _http.GetFromJsonAsync<List<Exercise>>($"api/Exercises/GetExercises/{workoutId}");
-            //if (result != null)
-            //{
-            //    this.Exercises = result;
-            //}
-            Console.WriteLine($"Getting exercises for workout {workoutId}");
+            var result = await _http.GetFromJsonAsync<List<Exercise>>($"http://localhost:5180/api/Exercises/GetExercises/{workoutId}");
+            if (result != null)
+            {
+                this.Exercises = result;
+            }
         }
 
-        public async Task GetSingleExercise(int id)
+        public async Task<Exercise> GetSingleExercise(int id)
         {
-            //var result = await _http.GetFromJsonAsync<Exercise>($"api/Exercises/GetExercise/{id}");
-            //if (result != null)
-            //{
-            //    return result;
-            //}
-            //throw new Exception("Exercise not found");
-            Console.WriteLine($"getting exercise {id}");
+            var result = await _http.GetFromJsonAsync<Exercise>($"api/Exercises/GetExercise/{id}");
+            if (result != null)
+            {
+                return result;
+            }
+            throw new Exception("Exercise not found");
         }
 
         public async Task UpdateExercise(Exercise ex)
         {
-            //var result = await _http.PutAsJsonAsync($"api/Exercises/{ex.Id}", ex);
-            //var response = await result.Content.ReadFromJsonAsync<Exercise>();
-            //// TODO: null check
-            //int index = Exercises.FindIndex(e => e.Id == ex.Id);
-            //if (index != -1)
-            //    Exercises[index] = ex;
-            //_navManager.NavigateTo($"workout/{response.WorkoutId}");
-            Console.WriteLine($"ipdating exercise {ex.Id}");
+            var result = await _http.PutAsJsonAsync($"api/Exercises/{ex.Id}", ex);
+            var response = await result.Content.ReadFromJsonAsync<Exercise>();
+            // TODO: null check
+            int index = Exercises.FindIndex(e => e.Id == ex.Id);
+            if (index != -1)
+                Exercises[index] = ex;
+            // await _localStorage.RemoveItemAsync("Workouts");
+            _navManager.NavigateTo($"workout/{response.WorkoutId}");
         }
     }
 }
