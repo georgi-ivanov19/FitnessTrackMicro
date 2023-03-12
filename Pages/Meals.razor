@@ -1,4 +1,6 @@
 ﻿@page "/meals"
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization;
 @using FitnessTrackMicro.Models;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using FitnessTrackMicro.Services.MealService;
@@ -218,12 +220,11 @@
         {
             var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
-            if (userId != null)
-            {
+
             await MealService.GetMeals(userId);
             dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
             date = DateTime.Today;
-            loading = false;    }
+            loading = false;
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -235,7 +236,7 @@
     {
         var title = id == null ? "Add Meal" : "Edit Meal";
         await DialogService.OpenAsync<MealForm>(title,
-        new Dictionary<string, object>() { { "Id", id }, { "Date", date }, {"UserId", userId} },
+        new Dictionary<string, object>() { { "Id", id }, { "Date", date }, { "UserId", userId } },
         new Radzen.DialogOptions()
             {
                 Width = "512px",
