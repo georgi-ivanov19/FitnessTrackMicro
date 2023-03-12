@@ -36,8 +36,7 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
                 }
             }
             var result = await _http.PostAsJsonAsync($"http://localhost:8081/api/ExerciseSets/range", list);
-            Console.WriteLine(list.Count);
-            Console.WriteLine(result.StatusCode);
+
             var response = await result.Content.ReadFromJsonAsync<List<ExerciseSet>>();
             // var trackedWorkout = await _localStorage.GetItemAsync<TrackedWorkout>($"TrackedWorkout{tw.Id}");
             ExerciseSets = response;
@@ -55,5 +54,5 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
 
             return response;
         }
-    }  
+    }
 }

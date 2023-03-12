@@ -65,7 +65,6 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //    return result;
             //}
             //throw new Exception("Measurement not found");
-            Console.WriteLine($"getting measurement {id}");
             return result;
         }
 
@@ -76,11 +75,9 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //// TODO: null check
             //
             //await _localStorage.SetItemAsync("Measurements", Measurements);
-            Console.WriteLine($"creating measurement {measurement.Id}, {measurement}");
             var result = await _http.PostAsJsonAsync("http://localhost:8083/api/Measurements", measurement);
             var response = await result.Content.ReadFromJsonAsync<Measurement>();
             Measurements.Add(response);
-            Console.WriteLine(result.Content.ToString());
             _navManager.NavigateTo("measurements");
         }
 
@@ -95,13 +92,11 @@ namespace FitnessTrackMicro.Services.MeasurementsService
                 Measurements[index] = measurement;
             //    await _localStorage.SetItemAsync("Measurements", Measurements);
             }
-            //Console.WriteLine($"Updating Measurement {measurement.Id}, {measurement}");
             _navManager.NavigateTo("measurements");
         }
 
         public async Task DeleteMeasurement(int id)
         {
-            Console.WriteLine($"Deleting Measurement {id}");
             await _http.DeleteAsync($"http://localhost:8083/api/Measurements/{id}");
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
         }

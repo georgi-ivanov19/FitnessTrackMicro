@@ -48,7 +48,6 @@ namespace FitnessTrackMicro.Services.MealService
 
         public async Task CreateMeal(Meal meal)
         {
-            Console.WriteLine($"Creating a meal {meal.Id}");
             var result = await _http.PostAsJsonAsync("http://localhost:8085/api/Meals", meal);
             var response = await result.Content.ReadFromJsonAsync<Meal>();
             Meals.Add(response);
@@ -96,7 +95,6 @@ namespace FitnessTrackMicro.Services.MealService
             //await _http.SendAsync(request);
             var response = await _http.GetFromJsonAsync<Meal>($"http://localhost:8085/api/Meals/{id}?applicationUserId={userId}");
             return response;
-            // Console.WriteLine($"Getting Meal {id}");
         }
 
         public async Task UpdateMeal(Meal meal)
@@ -104,14 +102,13 @@ namespace FitnessTrackMicro.Services.MealService
             var httpResult = await _http.PutAsJsonAsync($"http://localhost:8085/api/Meals/{meal.Id}", meal);
             var response = await httpResult.Content.ReadFromJsonAsync<Meal>();
 
-            //// TODO: null check
+            // TODO: null check
             int index = Meals.FindIndex(m => m.Id == meal.Id);
             if (index != -1)
             {
                 Meals[index] = meal;
                 await _localStorage.SetItemAsync("Meals", Meals);
             }
-            Console.WriteLine($"Updating meal {meal.Id}");
             _navManager.NavigateTo("meals");
 
         }

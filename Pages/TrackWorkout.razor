@@ -114,7 +114,6 @@
         try
         {
             latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.WorkoutId) ?? null;
-            Console.WriteLine("asd " + latestCompleted.Id);
         }
         catch (HttpRequestException e)
         {

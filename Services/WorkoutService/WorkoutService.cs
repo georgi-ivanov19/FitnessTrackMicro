@@ -88,7 +88,6 @@ namespace FitnessTrackMicro.Services.WorkoutService
                 Workouts[index] = workout;
                 // await _localStorage.SetItemAsync("Workouts", Workouts);
             }
-            Console.WriteLine($"updating workout {workout.Id}, From form {fromForm}");
 
             if (fromForm)
             {

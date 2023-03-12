@@ -250,7 +250,6 @@
     private async Task DeleteMeal(int id)
     {
         await MealService.DeleteMeal(id);
-        Console.WriteLine($"Deleting meal {id}");
         dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
     }
 
