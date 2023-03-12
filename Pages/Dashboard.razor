@@ -29,19 +29,22 @@
                     <RadzenColumn>
                         @if (weightAverages != null)
                         {
-                            <DashboardStatistic NumberOfDays=7 Title="Weight" Averages="@weightAverages" HasInfoIcon=true TrendIconTitle="@weightIconTitle()"></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Weight" Averages="@weightAverages" HasInfoIcon=true
+                        TrendIconTitle="@weightIconTitle()"></DashboardStatistic>
                         }
                     </RadzenColumn>
                     <RadzenColumn>
                         @if (waistAverages != null)
                         {
-                            <DashboardStatistic NumberOfDays=7 Title="Waist" Averages="@waistAverages" HasInfoIcon=true TrendIconTitle="@waistIconTitle()"></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Waist" Averages="@waistAverages" HasInfoIcon=true
+                        TrendIconTitle="@waistIconTitle()"></DashboardStatistic>
                         }
                     </RadzenColumn>
                     <RadzenColumn>
                         @if (bfAverages != null)
                         {
-                            <DashboardStatistic NumberOfDays=7 Title="Body fat" Averages="@bfAverages" HasInfoIcon=true TrendIconTitle="@bfIconTitle()"></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Body fat" Averages="@bfAverages" HasInfoIcon=true
+                        TrendIconTitle="@bfIconTitle()"></DashboardStatistic>
                         }
                     </RadzenColumn>
                 </RadzenRow>
@@ -56,16 +59,20 @@
                     @if (mealsAverages != null)
                     {
                         <RadzenColumn>
-                            <DashboardStatistic NumberOfDays=7 Title="Calories" Averages=@mealsAverages[0] HasInfoIcon=false TrendIconTitle=@caloriesIconTitle()></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Calories" Averages=@mealsAverages[0] HasInfoIcon=false
+                        TrendIconTitle=@caloriesIconTitle()></DashboardStatistic>
                         </RadzenColumn>
                         <RadzenColumn>
-                            <DashboardStatistic NumberOfDays=7 Title="Protein" Averages=@mealsAverages[1] HasInfoIcon=false TrendIconTitle=@macroIconTitle(1)></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Protein" Averages=@mealsAverages[1] HasInfoIcon=false
+                        TrendIconTitle=@macroIconTitle(1)></DashboardStatistic>
                         </RadzenColumn>
                         <RadzenColumn>
-                            <DashboardStatistic NumberOfDays=7 Title="Carbohydrates" Averages=@mealsAverages[2] HasInfoIcon=false TrendIconTitle=@macroIconTitle(2)></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Carbohydrates" Averages=@mealsAverages[2]
+                        HasInfoIcon=false TrendIconTitle=@macroIconTitle(2)></DashboardStatistic>
                         </RadzenColumn>
                         <RadzenColumn>
-                            <DashboardStatistic NumberOfDays=7 Title="Fats" Averages=@mealsAverages[3] HasInfoIcon=false TrendIconTitle=@macroIconTitle(3)></DashboardStatistic>
+                            <DashboardStatistic NumberOfDays=7 Title="Fats" Averages=@mealsAverages[3] HasInfoIcon=false
+                        TrendIconTitle=@macroIconTitle(3)></DashboardStatistic>
                         </RadzenColumn>
                     }
                 </RadzenRow>
@@ -77,9 +84,10 @@
                 <RadzenText TextStyle="TextStyle.H6" class="d-inline"> Workouts </RadzenText>
                 <RadzenText TextStyle="TextStyle.Overline" class="d-inline"> (30-day moving average) </RadzenText>
                 <RadzenDataList WrapItems="false" AllowPaging="false" Data="workoutsAverages"
-                            TItem="KeyValuePair<int, List<AverageResults>>">
+                TItem="KeyValuePair<int, List<AverageResults>>">
                     <Template Context="workoutAverageKV">
-                        <DashboardWorkout WorkoutId="@workoutAverageKV.Key" Averages="@workoutAverageKV.Value"></DashboardWorkout>
+                        <DashboardWorkout WorkoutId="@workoutAverageKV.Key" Averages="@workoutAverageKV.Value">
+                        </DashboardWorkout>
                     </Template>
                 </RadzenDataList>
             </RadzenCard>
@@ -106,12 +114,12 @@
             if (userId != null)
             {
                 // Will need user
-                measurementsAverages = await MeasurementService.GetAverages(DateTime.Now);
-
-                mealsAverages = await MealService.GetAverages(DateTime.Now);
+                measurementsAverages = await MeasurementService.GetAverages(userId, DateTime.Now);
                 weightAverages = measurementsAverages[0];
                 waistAverages = measurementsAverages[1];
                 bfAverages = measurementsAverages[2];
+                mealsAverages = await MealService.GetAverages(userId, DateTime.Now);
+
 
                 workoutsAverages = await TrackedWorkoutService.GetAverages(userId, DateTime.Now);
                 loading = false;
@@ -120,7 +128,7 @@
             {
                 Console.WriteLine("No User, sign in");
             }
-            
+
         }
         catch (AccessTokenNotAvailableException exception)
         {

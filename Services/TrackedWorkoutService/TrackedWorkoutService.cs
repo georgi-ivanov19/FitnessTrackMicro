@@ -28,9 +28,9 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             workoutToStart.TotalVolume = 0;
             workoutToStart.StartTime = DateTime.Now;
 
-            var result = await _http.PostAsJsonAsync($"http://localhost:5180/api/trackedworkouts", workoutToStart);
+            var result = await _http.PostAsJsonAsync($"http://localhost:8081/api/TrackedWorkouts", workoutToStart);
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
-            // TODO: null check  
+            // TODO: null check
             TrackedWorkouts.Add(response);
             // await _localStorage.SetItemAsync($"TrackedWorkout{response.Id}", response);
 
@@ -47,7 +47,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:5180/api/trackedworkouts/GetWorkout/{id}");
+                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:8081/api/TrackedWorkouts/GetWorkout/{id}");
             //}
 
             if (result != null)
@@ -70,7 +70,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:5180/api/trackedworkouts/GetLatestCompleted/{parentWorkoutId}");
+                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:8081/api/TrackedWorkouts/GetLatestCompleted/{parentWorkoutId}");
             //}
 
             if (result != null)
@@ -82,7 +82,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
 
         public async Task UpdateTrackedWorkout(TrackedWorkout workout, bool finish = false)
         {
-            var result = await _http.PutAsJsonAsync($"http://localhost:5180/api/trackedworkouts/{workout.Id}", workout);
+            var result = await _http.PutAsJsonAsync($"http://localhost:8081/api/TrackedWorkouts/{workout.Id}", workout);
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
             int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
             if (index != -1)
@@ -114,7 +114,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"http://localhost:5180/api/trackedworkouts/{parentWorkoutId}");
+                result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"http://localhost:8081/api/TrackedWorkouts/{parentWorkoutId}");
                 result = result.Where(tw => tw.IsCompleted == true).ToList();
             //}
 
@@ -130,7 +130,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
 
         public async Task<Dictionary<int, List<AverageResults>>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"http://localhost:5180/api/trackedworkouts/GetAverages?userId={userId}&Date={date}");
+            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"http://localhost:8081/api/TrackedWorkouts/GetAverages?userId={userId}&Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

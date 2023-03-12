@@ -21,19 +21,19 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             _localStorage = localStorage;
         }
 
-        public async Task GetMeasurements()
+        public async Task GetMeasurements(string applicationUserId)
         {
             List<Measurement>? result;
-            var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
-            if (measurementsInLocalStorage)
-            {
-                result = await _localStorage.GetItemAsync<List<Measurement>>("Measurements");
-            }
-            else
-            {
-                result = await _http.GetFromJsonAsync<List<Measurement>>("sample-data/measurements.json");
-                await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
-            }
+            // var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
+            // if (measurementsInLocalStorage)
+            // {
+            //     result = await _localStorage.GetItemAsync<List<Measurement>>("Measurements");
+            // }
+            // else
+            // {
+            result = await _http.GetFromJsonAsync<List<Measurement>>($"http://localhost:8083/api/Measurements?applicationUserId={applicationUserId}");
+                // await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
+            // }
 
             if (result != null)
             {
@@ -46,9 +46,9 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             return Measurements.Where(x => x.Type == type).OrderByDescending(x => x.Date);
         }
 
-        public async Task GetSingleMeasurement(int id)
+        public async Task<Measurement> GetSingleMeasurement(int id)
         {
-            //Measurement? result;
+            Measurement? result;
             //var measurementsInLocalStorage = await _localStorage.ContainKeyAsync("Measurements");
             //if (measurementsInLocalStorage)
             //{
@@ -57,7 +57,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //}
             //else
             //{
-            //    result = await _http.GetFromJsonAsync<Measurement>($"api/measurement/{id}");
+                result = await _http.GetFromJsonAsync<Measurement>($"http://localhost:8083/api/Measurements/{id}");
             //}
 
             //if (result != null)
@@ -66,47 +66,49 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //}
             //throw new Exception("Measurement not found");
             Console.WriteLine($"getting measurement {id}");
+            return result;
         }
 
         public async Task CreateMeasurement(Measurement measurement)
         {
             //var result = await _http.PostAsJsonAsync("api/measurement", measurement);
-            //var response = await result.Content.ReadFromJsonAsync<Measurement>();
+            //
             //// TODO: null check
-            //Measurements.Add(response);
+            //
             //await _localStorage.SetItemAsync("Measurements", Measurements);
             Console.WriteLine($"creating measurement {measurement.Id}, {measurement}");
-            var result = await _http.PostAsJsonAsync("https://localhost:49153/api/Measurement", measurement);
+            var result = await _http.PostAsJsonAsync("http://localhost:8083/api/Measurements", measurement);
+            var response = await result.Content.ReadFromJsonAsync<Measurement>();
+            Measurements.Add(response);
             Console.WriteLine(result.Content.ToString());
             _navManager.NavigateTo("measurements");
         }
 
         public async Task UpdateMeasurement(Measurement measurement)
         {
-            //var result = await _http.PutAsJsonAsync($"api/measurement/{measurement.Id}", measurement);
-            //var response = await result.Content.ReadFromJsonAsync<Measurement>();
-            //// TODO: null check
-            //int index = Measurements.FindIndex(m => m.Id == measurement.Id);
-            //if (index != -1)
-            //{
-            //    Measurements[index] = measurement;
+            var result = await _http.PutAsJsonAsync($"http://localhost:8083/api/Measurements/{measurement.Id}", measurement);
+            var response = await result.Content.ReadFromJsonAsync<Measurement>();
+            // TODO: null check
+            int index = Measurements.FindIndex(m => m.Id == measurement.Id);
+            if (index != -1)
+            {
+                Measurements[index] = measurement;
             //    await _localStorage.SetItemAsync("Measurements", Measurements);
-            //}
-            Console.WriteLine($"Updating Measurement {measurement.Id}, {measurement}");
+            }
+            //Console.WriteLine($"Updating Measurement {measurement.Id}, {measurement}");
             _navManager.NavigateTo("measurements");
         }
 
         public async Task DeleteMeasurement(int id)
         {
-            //await _http.DeleteAsync($"api/measurement/{id}");
             Console.WriteLine($"Deleting Measurement {id}");
+            await _http.DeleteAsync($"http://localhost:8083/api/Measurements/{id}");
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
-            await _localStorage.SetItemAsync("Measurements", Measurements);
         }
 
-        public async Task<List<AverageResults>> GetAverages(DateTime date)
+        public async Task<List<AverageResults>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"sample-data/measurementAverages.json");
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8083/api/Measurements/GetAverages?userId={userId}&Date={date}"); // /GetAverages?userId-{x}
             if (result == null)
                 throw new Exception("No results found");
             return result;

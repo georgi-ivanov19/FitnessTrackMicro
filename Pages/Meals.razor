@@ -6,7 +6,7 @@
 @inject IMealService MealService
 @inject NavigationManager NavManager
 @inject Radzen.DialogService DialogService
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle> Meals </PageTitle>
 <RadzenCard>
@@ -207,19 +207,23 @@
 
 @code {
     private MealMacros targets = new MealMacros(2000, 140, 200, 80);
-
     private IEnumerable<Meal> dayMeals = new List<Meal>();
     private bool loading = true;
     private DateTime date = DateTime.Today;
+    string? userId = null;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            await MealService.GetMeals();
+            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
+            if (userId != null)
+            {
+            await MealService.GetMeals(userId);
             dayMeals = MealService.Meals.Where(m => m.Date.Date == date.Date).ToList();
             date = DateTime.Today;
-            loading = false;        
+            loading = false;    }
         }
         catch (AccessTokenNotAvailableException exception)
         {
@@ -227,11 +231,11 @@
         }
     }
 
-    private async Task ShowForm(string? id, DateTime date)
+    private async Task ShowForm(int? id, DateTime date)
     {
         var title = id == null ? "Add Meal" : "Edit Meal";
         await DialogService.OpenAsync<MealForm>(title,
-        new Dictionary<string, object>() { { "Id", id }, { "Date", date } },
+        new Dictionary<string, object>() { { "Id", id }, { "Date", date }, {"UserId", userId} },
         new Radzen.DialogOptions()
             {
                 Width = "512px",
@@ -243,7 +247,7 @@
         dayMeals = MealService.Meals.Where(m => m.Date == date.Date).ToList();
     }
 
-    private async Task DeleteMeal(string id)
+    private async Task DeleteMeal(int id)
     {
         await MealService.DeleteMeal(id);
         Console.WriteLine($"Deleting meal {id}");

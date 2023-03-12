@@ -2,6 +2,7 @@
 using FitnessTrackMicro.Models;
 using Microsoft.AspNetCore.Components;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace FitnessTrackMicro.Services.ExerciseSetService
 {
@@ -19,7 +20,7 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
 
         public async Task CreateExerciseSetRange(Workout w, TrackedWorkout tw)
         {
-            List<ExerciseSet> list = new List<ExerciseSet>();          
+            List<ExerciseSet> list = new List<ExerciseSet>();
             foreach (var item in w.Exercises)
             {
                 for (int i = 0; i < item.DefaultNumberOfSets; i++)
@@ -34,7 +35,7 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
                     });
                 }
             }
-            var result = await _http.PostAsJsonAsync($"http://localhost:5180/api/ExerciseSets/range", list);
+            var result = await _http.PostAsJsonAsync($"http://localhost:8081/api/ExerciseSets/range", list);
             Console.WriteLine(list.Count);
             Console.WriteLine(result.StatusCode);
             var response = await result.Content.ReadFromJsonAsync<List<ExerciseSet>>();
@@ -43,5 +44,16 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
             //trackedWorkout.ExerciseSetsCompleted = ExerciseSets;
             //await _localStorage.SetItemAsync($"TrackedWorkout{tw.Id}", trackedWorkout);
         }
-    }
+        public async Task<ExerciseSet> UpdateExerciseSet(ExerciseSet set)
+        {
+            var result = await _http.PutAsJsonAsync($"http://localhost:8081/api/ExerciseSets/{set.Id}", set);
+            var response = await result.Content.ReadFromJsonAsync<ExerciseSet>();
+            // TODO: null check
+            int index = ExerciseSets.FindIndex(e => e.Id == set.Id);
+            if (index != -1)
+                ExerciseSets[index] = set;
+
+            return response;
+        }
+    }  
 }

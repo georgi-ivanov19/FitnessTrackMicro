@@ -7,5 +7,6 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
         List<ExerciseSet> ExerciseSets { get; set; }
 
         Task CreateExerciseSetRange(Workout w, TrackedWorkout tw);
+        Task<ExerciseSet> UpdateExerciseSet(ExerciseSet set);
     }
 }

@@ -26,19 +26,19 @@ namespace FitnessTrackMicro.Services.MealService
             _localStorage = localStorage;
             _auth = AuthenticationStateProvider;
         }
-        public async Task GetMeals()
+        public async Task GetMeals(string userId)
         {
             List<Meal>? result;
-            var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
-            if (mealsInLocalStorage)
-            {
-                result = await _localStorage.GetItemAsync<List<Meal>>("Meals");
-            }
-            else
-            {
-                result = await _http.GetFromJsonAsync<List<Meal>>("https://localhost:49157/api/Meals");
+            // var mealsInLocalStorage = await _localStorage.ContainKeyAsync("Meals");
+            // if (mealsInLocalStorage)
+            // {
+            //     result = await _localStorage.GetItemAsync<List<Meal>>("Meals");
+            // }
+            // else
+            // {
+                result = await _http.GetFromJsonAsync<List<Meal>>($"http://localhost:8085/api/Meals?applicationUserId={userId}");
                 //await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
-            }
+            //}
 
             if (result != null)
             {
@@ -49,14 +49,14 @@ namespace FitnessTrackMicro.Services.MealService
         public async Task CreateMeal(Meal meal)
         {
             Console.WriteLine($"Creating a meal {meal.Id}");
-            var result = await _http.PostAsJsonAsync("https://localhost:49157/api/Meals", meal);
+            var result = await _http.PostAsJsonAsync("http://localhost:8085/api/Meals", meal);
             var response = await result.Content.ReadFromJsonAsync<Meal>();
             Meals.Add(response);
             await _localStorage.SetItemAsync("Meals", Meals);
             _navManager.NavigateTo("meals");
         }
 
-        public async Task DeleteMeal(string id)
+        public async Task DeleteMeal(int id)
         {
             var authenticationState = await _auth.GetAuthenticationStateAsync();
             var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
@@ -72,7 +72,7 @@ namespace FitnessTrackMicro.Services.MealService
             //    Content = new StringContent(JsonConvert.SerializeObject(httpBody), Encoding.UTF8, "application/json")
 
             //};
-            await _http.DeleteAsync($"https://localhost:49157/api/Meals?mealId={id}&applicationUserId={userId}");
+            await _http.DeleteAsync($"http://localhost:8085/api/Meals?mealId={id}&applicationUserId={userId}");
             //await _http.SendAsync(request);
 
             Meals.RemoveAt(Meals.FindIndex(m => m.Id == id));
@@ -80,7 +80,7 @@ namespace FitnessTrackMicro.Services.MealService
         }
 
 
-        public async Task<Meal> GetSingleMeal(string id)
+        public async Task<Meal> GetSingleMeal(int id)
         {
             var authenticationState = await _auth.GetAuthenticationStateAsync();
             var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
@@ -94,14 +94,14 @@ namespace FitnessTrackMicro.Services.MealService
             //    Content = new StringContent(JsonConvert.SerializeObject(httpBody), Encoding.UTF8, "application/json")
             //};
             //await _http.SendAsync(request);
-            var response = await _http.GetFromJsonAsync<Meal>($"https://localhost:49157/api/Meals/{id}?applicationUserId={userId}");
+            var response = await _http.GetFromJsonAsync<Meal>($"http://localhost:8085/api/Meals/{id}?applicationUserId={userId}");
             return response;
             // Console.WriteLine($"Getting Meal {id}");
         }
 
         public async Task UpdateMeal(Meal meal)
         {
-            var httpResult = await _http.PutAsJsonAsync($"https://localhost:49157/api/Meals/{meal.Id}", meal);
+            var httpResult = await _http.PutAsJsonAsync($"http://localhost:8085/api/Meals/{meal.Id}", meal);
             var response = await httpResult.Content.ReadFromJsonAsync<Meal>();
 
             //// TODO: null check
@@ -138,9 +138,9 @@ namespace FitnessTrackMicro.Services.MealService
             return new MealMacros(totalCalories, totalProtein, totalCarbohydrates, totalFats);
         }
 
-        public async Task<List<AverageResults>> GetAverages(DateTime date)
+        public async Task<List<AverageResults>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"sample-data/mealAverages.json");
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8085/api/Meals/GetAverages?userId={userId}&date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

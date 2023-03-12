@@ -42,13 +42,15 @@
     public int? Id { get; set; }
     [Parameter]
     public string? DefaultType { get; set; }
+    [Parameter]
+    public string UserId { get; set; } = string.Empty;
 
     private string btnText = string.Empty;
     private Measurement m = new Measurement();
     private string[] measurementTypes = { "Weight", "Waist", "Body fat" };
     private string[] measurementUnits = new string[1];
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         btnText = Id == null ? "Create" : "Confirm";
     }
@@ -59,12 +61,12 @@
         {
             if (DefaultType != null)
                 m.Type = DefaultType;
-
+            m.ApplicationUserId = UserId;
             m.Date = DateTime.Today;
         }
         else
         {
-            await MeasurementsService.GetSingleMeasurement((int)Id);
+            m = await MeasurementsService.GetSingleMeasurement((int)Id);
         }
         switch (m.Type)
         {

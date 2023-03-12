@@ -40,8 +40,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // workout = await 
-        WorkoutService.GetSingleWorkout(WorkoutId);
+       workout = await WorkoutService.GetSingleWorkout(WorkoutId);
     }
 
     protected string volumeIconTitle()

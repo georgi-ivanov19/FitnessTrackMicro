@@ -6,13 +6,13 @@ namespace FitnessTrackMicro.Services.MealService
   {
     List<Meal> Meals { get; set; }
 
-    Task GetMeals();
-        Task<Meal> GetSingleMeal(string id);
+    Task GetMeals(string userId);
+        Task<Meal> GetSingleMeal(int id);
         Task CreateMeal(Meal meal);
         Task UpdateMeal(Meal meal);
-        Task DeleteMeal(string id);
+        Task DeleteMeal(int id);
         IEnumerable<Meal> GetMealsByDate(DateTime date);
         MealMacros CalculateMacros(IEnumerable<Meal> meals);
-        Task<List<AverageResults>> GetAverages(DateTime date);
+        Task<List<AverageResults>> GetAverages(string userId, DateTime date);
   }
 }

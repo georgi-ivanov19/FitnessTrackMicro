@@ -11,17 +11,22 @@
         </div>
         <div class="m-2">
             <label for="target-muscle"> Target Muscle </label>
-            <RadzenTextBox Name="TargetMuscle" id="target-muscle" @bind-Value="e.TargetMuscle" class="form-control"></RadzenTextBox>
-            <RadzenRequiredValidator Component="TargetMuscle" Text="Target Muscle is required" Style="position: relative" />
+            <RadzenTextBox Name="TargetMuscle" id="target-muscle" @bind-Value="e.TargetMuscle" class="form-control">
+            </RadzenTextBox>
+            <RadzenRequiredValidator Component="TargetMuscle" Text="Target Muscle is required"
+                Style="position: relative" />
         </div>
         <div class="m-2">
             <label for="sets-num"> Number of sets </label>
-            <RadzenNumeric Name="Sets" id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control ms-2" Style="width: 60px;"></RadzenNumeric>
-            <RadzenNumericRangeValidator Component="Sets" Min="0.01" Text="Value must be bigger than 0" Style="position: relative; display: block;" />
+            <RadzenNumeric Name="Sets" id="sets-num" @bind-Value="e.DefaultNumberOfSets" class="form-control ms-2"
+                Style="width: 60px;"></RadzenNumeric>
+            <RadzenNumericRangeValidator Component="Sets" Min="0.01" Text="Value must be bigger than 0"
+                Style="position: relative; display: block;" />
         </div>
     </div>
     <br />
-    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText</RadzenButton>
+    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText
+    </RadzenButton>
 </RadzenTemplateForm>
 
 
@@ -50,7 +55,7 @@
         }
         else
         {
-            await ExerciseService.GetSingleExercise((int)Id);
+            e = await ExerciseService.GetSingleExercise((int)Id);
         }
 
     }

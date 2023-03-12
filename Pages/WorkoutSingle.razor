@@ -13,11 +13,13 @@
 @inject IExerciseSetService ExerciseSetService;
 @inject ITrackedWorkoutService TrackedWorkoutService;
 @inject NavigationManager NavManager;
+@inject IJSRuntime JsRuntime
 
 <PageTitle> @workout.Name </PageTitle>
 <RadzenCard>
     <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> @workout.Name </RadzenText>
-    <RadzenButton Click=@(args => StartWorkout(workout)) Icon="play_arrow" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Success" Class="rz-border-radius-10 rz-shadow-6" />
+    <RadzenButton Click=@(args => StartWorkout(workout)) Icon="play_arrow" Size="Radzen.ButtonSize.Medium"
+        ButtonStyle="Radzen.ButtonStyle.Success" Class="rz-border-radius-10 rz-shadow-6" />
     @if (trackedWorkouts.Count == 0)
     {
         <RadzenText TextStyle="TextStyle.H5" class="my-3">
@@ -29,7 +31,7 @@
         <RadzenChart class="mb-5">
             <RadzenLegend Visible="false" />
             <RadzenLineSeries Smooth="false" Data="trackedWorkouts" CategoryProperty="EndTime" Title="TotalVolume"
-                          ValueProperty="TotalVolume">
+            ValueProperty="TotalVolume">
                 <ChildContent>
                     <RadzenMarkers MarkerType="MarkerType.Circle" Fill="#874EFE" StrokeWidth="1" Size="6" />
                     <RadzenSeriesDataLabels />
@@ -40,20 +42,20 @@
     @if (latestCompleted != null)
     {
         <div class="summary m-2">
-            <WorkoutSummary workout="@latestCompleted" parentWorkout="@workout" />
+            <WorkoutSummary workout="@latestCompleted" ParentWorkoutName="@workout.Name" />
         </div>
     }
     <div class="exercises mt-2">
         <RadzenText TextStyle="TextStyle.H5" class="d-inline me-1"> Exercises </RadzenText>
-        <RadzenButton Click=@(args => ShowForm(null)) Icon="add" Size="Radzen.ButtonSize.Medium" ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
-        <RadzenDataList WrapItems="false" AllowPaging="true" Data="ExerciseService.Exercises"
-                        TItem="Exercise">
+        <RadzenButton Click=@(args => ShowForm(null)) Icon="add" Size="Radzen.ButtonSize.Medium"
+            ButtonStyle="Radzen.ButtonStyle.Primary" Class="rz-border-radius-10 rz-shadow-6" />
+        <RadzenDataList WrapItems="false" AllowPaging="true" Data="ExerciseService.Exercises" TItem="Exercise">
             <Template Context="exercise">
                 <RadzenText class="d-inline">@exercise.Name</RadzenText>
                 <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => ShowForm(exercise.Id)) Icon="edit"
-                              ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" />
+                    ButtonStyle="Radzen.ButtonStyle.Info" Text="Edit" Size="Radzen.ButtonSize.Small" />
                 <RadzenButton Variant="Radzen.Variant.Text" Click=@(args => DeleteExercise(exercise.Id)) Icon="delete"
-                              ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" />
+                    ButtonStyle="Radzen.ButtonStyle.Danger" Text="Delete" Size="Radzen.ButtonSize.Small" />
             </Template>
         </RadzenDataList>
     </div>
@@ -77,7 +79,7 @@
             if (workout.TrackedWorkouts.Any())
             {
                 trackedWorkouts = workout.TrackedWorkouts.Where(tw => tw.IsCompleted == true).ToList();
-                if(trackedWorkouts.Count > 0)
+                if (trackedWorkouts.Count > 0)
                     latestCompleted = trackedWorkouts.OrderByDescending(w => w.EndTime).First();
             }
             await ExerciseService.GetExercises(Id);
@@ -90,10 +92,16 @@
 
     private async void StartWorkout(Workout w)
     {
-        var tw = await TrackedWorkoutService.StartWorkout(w);
-        await ExerciseSetService.CreateExerciseSetRange(w, tw);
-        Console.WriteLine($"should navigate to track/some id");
-        NavManager.NavigateTo($"track/{tw.Id}");
+        if (w.Exercises.Any())
+        {
+            var tw = await TrackedWorkoutService.StartWorkout(w);
+            await ExerciseSetService.CreateExerciseSetRange(w, tw);
+            NavManager.NavigateTo($"track/{tw.Id}");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Cannot start a workout with no exercises"); // Alert
+        }
     }
 
     private async Task ShowForm(int? id)
@@ -102,16 +110,18 @@
         await DialogService.OpenAsync<ExerciseForm>(title,
         new Dictionary<string, object>() { { "Id", id }, { "WorkoutId", workout.Id } },
         new Radzen.DialogOptions()
-            {
-                Width = "512px",
-                Draggable = true,
-                CloseDialogOnOverlayClick = true
-            }
+        {
+            Width = "512px",
+            Draggable = true,
+            CloseDialogOnOverlayClick = true
+        }
         );
+        workout = await WorkoutService.GetSingleWorkout(Id);
     }
 
     private async Task DeleteExercise(int id)
     {
         await ExerciseService.DeleteExercise(id);
+        workout = await WorkoutService.GetSingleWorkout(Id);
     }
 }

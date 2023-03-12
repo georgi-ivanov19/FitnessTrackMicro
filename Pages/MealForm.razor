@@ -54,7 +54,9 @@
 
 @code {
     [Parameter]
-    public string? Id { get; set; }
+    public int? Id { get; set; }
+    [Parameter]
+    public string? userId { get; set; }
     [Parameter]
     public DateTime? Date { get; set; }
     private string[] mealTypes = { "Breakfast", "Lunch", "Dinner", "Snack" };
@@ -71,11 +73,11 @@
         if (Id == null)
         {
             m.Date = Date ?? DateTime.Today;
-            m.Id = Guid.NewGuid().ToString();
+            m.ApplicationUserId = userId;
         }
         else
         {
-            m = await MealService.GetSingleMeal(Id);
+            m = await MealService.GetSingleMeal((int)Id);
         }
 
     }
@@ -83,8 +85,7 @@
     {
         if (Id == null)
         {
-            var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            m.ApplicationUserId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
+            // m.ApplicationUserId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
             await MealService.CreateMeal(m);
         }
         else

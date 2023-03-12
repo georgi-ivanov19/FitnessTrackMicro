@@ -1,0 +1,53 @@
+﻿@using FitnessTrackMicro.Services.TrackedWorkoutService;
+@using FitnessTrackMicro.Services.WorkoutService;
+@inject ITrackedWorkoutService TrackedWorkoutService;
+@inject IWorkoutService WorkoutService;
+
+
+<div class="p-2 d-inline-block" style="background-color: rgb(235, 235, 235); border-radius: 6px;">
+    <RadzenText TextStyle="TextStyle.DisplayH5" class="m-1 p-1"> Summary of last completed @ParentWorkoutName workout</RadzenText>
+    <div class="exercises m-2 p-2">
+        <RadzenText TextStyle="TextStyle.DisplayH6">
+            Exercises Summary
+            <RadzenText TextStyle="TextStyle.Overline"><b>(Weight x Reps)</b></RadzenText>
+        </RadzenText>
+
+        @foreach (var group in workout.ExerciseSetsCompleted.GroupBy(e => e.ExerciseId))
+        {
+            <div class="ms-2">
+                <RadzenText TextStyle="TextStyle.Caption">@group.First().ExerciseName </RadzenText>
+                @foreach (var set in group)
+                {
+                    if (set.Weight != null && set.Reps != null)
+                    {
+                        <RadzenText class="ms-2" TextStyle="TextStyle.Overline"><b>@($"{set.Weight}x{set.Reps} ")</b></RadzenText>
+                    }
+                }
+            </div>
+        }
+    </div>
+    <div class="notes m-2 p-2">
+        <RadzenText TextStyle="TextStyle.DisplayH6" Style="d-inline">
+            Notes:
+        </RadzenText>
+        <RadzenText TextStyle="TextStyle.Caption" Class="ms-2">@workout.Notes</RadzenText>
+    </div>
+    <div class="duration m-2 p-2">
+        <RadzenText TextStyle="TextStyle.Subtitle2" Style="d-inline">
+            Duration: @workoutDuration(workout)
+        </RadzenText>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public TrackedWorkout workout { get; set; }
+    [Parameter]
+    public string ParentWorkoutName { get; set; }
+
+    private string workoutDuration(TrackedWorkout workout)
+    {
+        var duration = workout.EndTime - workout.StartTime;
+        return duration == null ? "" : ((TimeSpan)duration).ToString(@"h\:mm");
+    }
+}

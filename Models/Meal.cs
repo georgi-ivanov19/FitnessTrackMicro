@@ -9,7 +9,7 @@ namespace FitnessTrackMicro.Models
 {
     public class Meal
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string ApplicationUserId { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public double TotalCalories { get; set; }

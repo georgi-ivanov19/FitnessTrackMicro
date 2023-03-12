@@ -11,19 +11,22 @@
         </div>
         <div class="m-2">
             <label for="dow"> Day of Week </label>
-            <RadzenDropDown Name="DOW" id="dow" Data=@daysOfWeek @bind-Value="w.DayOfWeek" class="form-control"></RadzenDropDown>
+            <RadzenDropDown Name="DOW" id="dow" Data=@daysOfWeek @bind-Value="w.DayOfWeek" class="form-control">
+            </RadzenDropDown>
             <RadzenRequiredValidator Component="DOW" Text="Field is required" Style="position: relative" />
         </div>
     </div>
     <br />
-    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText</RadzenButton>
+    <RadzenButton Shade="Radzen.Shade.Light" type="submit" ButtonStyle="Radzen.ButtonStyle.Primary">@btnText
+    </RadzenButton>
 </RadzenTemplateForm>
 
 
 @code {
     [Parameter]
     public int? Id { get; set; }
-
+    [Parameter]
+    public string? userId { get; set; }
     private string btnText = string.Empty;
     private Workout w = new Workout();
     private string[] daysOfWeek = { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
@@ -38,10 +41,11 @@
         if (Id == null)
         {
             // Do nothing
+            w.ApplicationUserId = userId;
         }
         else
         {
-            await WorkoutService.GetSingleWorkout((int)Id);
+            w = await WorkoutService.GetSingleWorkout((int)Id);
         }
 
     }

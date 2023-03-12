@@ -100,20 +100,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        bool workoutIsInLocalStorage = await localStorage.ContainKeyAsync($"TrackedWorkout{Id}");
-        if (workoutIsInLocalStorage)
-        {
-            trackedWorkout = await localStorage.GetItemAsync<TrackedWorkout>($"TrackedWorkout{Id}");
-        }
-        else
-        {
-            trackedWorkout = await TrackedWorkoutService.GetSingleWorkout(Id);
-            await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
-        }
+        //bool workoutIsInLocalStorage = await localStorage.ContainKeyAsync($"TrackedWorkout{Id}");
+        //if (workoutIsInLocalStorage)
+        //{
+        //trackedWorkout = await localStorage.GetItemAsync<TrackedWorkout>($"TrackedWorkout{Id}");
+        //}
+        //else
+        //{
+        trackedWorkout = await TrackedWorkoutService.GetSingleWorkout(Id);
+        //await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
+        //}
 
         try
         {
-            latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.WorkoutId);
+            latestCompleted = await TrackedWorkoutService.GetLatestCompleted(trackedWorkout.WorkoutId) ?? null;
+            Console.WriteLine("asd " + latestCompleted.Id);
         }
         catch (HttpRequestException e)
         {
@@ -129,11 +130,12 @@
 
     private async Task SetCompleted(bool value, ExerciseSet set)
     {
+        await ExerciseSetService.UpdateExerciseSet(set);
         trackedWorkout.TotalVolume += (double)set.Weight! * (double)set.Reps!;
         var setIndex = trackedWorkout.ExerciseSetsCompleted.FindIndex(s => s.Id == set.Id);
         trackedWorkout.ExerciseSetsCompleted[setIndex] = set;
         setsCompleted = trackedWorkout.ExerciseSetsCompleted.Count(s => s.IsComplete == true);
-        await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
+        //await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
     }
 
     private async Task FinishWorkout(TrackedWorkout w)
@@ -142,16 +144,16 @@
         w.EndTime = DateTime.Now;
 
         await TrackedWorkoutService.UpdateTrackedWorkout(w, true);
-        await localStorage.RemoveItemAsync($"TrackedWorkout{w.Id}");
+        //await localStorage.RemoveItemAsync($"TrackedWorkout{w.Id}");
         NavManager.NavigateTo($"workout/{w.WorkoutId}");
     }
 
     private List<ExerciseSet> latestSetsForExercise(int exId)
     {
         bool anyNewExercises = false;
-        foreach(var item in parentWorkout.Exercises)
+        foreach (var item in parentWorkout.Exercises)
         {
-            if(latestCompleted != null && latestCompleted.ExerciseSetsCompleted.Where(e => e.ExerciseId == item.Id).Count() == 0)
+            if (latestCompleted != null && latestCompleted.ExerciseSetsCompleted.Where(e => e.ExerciseId == item.Id).Count() == 0)
             {
                 anyNewExercises = true;
             }
