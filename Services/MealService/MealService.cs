@@ -137,7 +137,7 @@ namespace FitnessTrackMicro.Services.MealService
 
         public async Task<List<AverageResults>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8085/api/Meals/GetAverages?userId={userId}&date={date}");
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8087/api/Dashboard/GetMealsAverages?userId={userId}&date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

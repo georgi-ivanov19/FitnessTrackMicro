@@ -103,7 +103,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
 
         public async Task<List<AverageResults>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8083/api/Measurements/GetAverages?userId={userId}&Date={date}"); // /GetAverages?userId-{x}
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8087/api/Dashboard/GetMeasurementsAverages?userId={userId}&Date={date}"); // /GetAverages?userId-{x}
             if (result == null)
                 throw new Exception("No results found");
             return result;

@@ -130,7 +130,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
 
         public async Task<Dictionary<int, List<AverageResults>>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"http://localhost:8081/api/TrackedWorkouts/GetAverages?userId={userId}&Date={date}");
+            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"http://localhost:8087/api/Dashboard/GetWorkoutsAverages?userId={userId}&Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;
