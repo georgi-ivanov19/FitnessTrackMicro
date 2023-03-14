@@ -1,5 +1,4 @@
-﻿using Blazored.LocalStorage;
-using FitnessTrackMicro.Models;
+﻿using FitnessTrackMicro.Models;
 using System.Net.Http.Json;
 
 namespace FitnessTrackMicro.Services.DashboardService
@@ -7,9 +6,8 @@ namespace FitnessTrackMicro.Services.DashboardService
     public class DashboardService : IDashboardService
     {
         private readonly HttpClient _http;
-        
-        public DashboardService(HttpClient http, ILocalStorageService localStorage)
-        {
+
+        public DashboardService(HttpClient http){
             _http = http;
         }
         public async Task<DashboardResults> GetDashboardData(string userId, DateTime date)
