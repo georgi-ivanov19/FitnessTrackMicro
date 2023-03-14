@@ -1,15 +1,11 @@
 ﻿@page "/"
 @attribute [Authorize]
+@using FitnessTrackMicro.Services.DashboardService;
 @using Microsoft.AspNetCore.Authorization;
 @using FitnessTrackMicro.Models;
-@using FitnessTrackMicro.Services.MeasurementsService;
-@using FitnessTrackMicro.Services.MealService;
-@using FitnessTrackMicro.Services.TrackedWorkoutService;
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @inject HttpClient Http
-@inject IMeasurementsService MeasurementService;
-@inject IMealService MealService;
-@inject ITrackedWorkoutService TrackedWorkoutService;
+@inject IDashboardService DashboardService;
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Dashboard</PageTitle>
@@ -104,21 +100,26 @@
     AverageResults? bfAverages = null;
     List<AverageResults>? mealsAverages = null;
     Dictionary<int, List<AverageResults>>? workoutsAverages = null;
+    DashboardResults? dashboardResults;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
+            // Will need user
             var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var userId = authenticationState.User.FindFirst(c => c.Type == "sub")?.Value;
-            // Will need user
-            measurementsAverages = await MeasurementService.GetAverages(userId, DateTime.Now);
+            
+            dashboardResults = await DashboardService.GetDashboardData(userId, DateTime.Now);
+
+            measurementsAverages = dashboardResults.MeasurementAverages;
             weightAverages = measurementsAverages[0];
             waistAverages = measurementsAverages[1];
             bfAverages = measurementsAverages[2];
-            mealsAverages = await MealService.GetAverages(userId, DateTime.Now);
 
-            workoutsAverages = await TrackedWorkoutService.GetAverages(userId, DateTime.Now);
+            mealsAverages = dashboardResults.MealsAverages;
+
+            workoutsAverages = dashboardResults.WorkoutsAverages;
             loading = false;
 
         }

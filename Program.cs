@@ -9,6 +9,7 @@ using FitnessTrackMicro.Services.MealService;
 using FitnessTrackMicro.Services.MeasurementsService;
 using FitnessTrackMicro.Services.TrackedWorkoutService;
 using FitnessTrackMicro.Services.WorkoutService;
+using FitnessTrackMicro.Services.DashboardService;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,6 +24,7 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.DefaultAccessTokenScopes.Add("offline_access");
     options.ProviderOptions.LoginMode = "redirect";
 });
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IMeasurementsService, MeasurementsService>();
 builder.Services.AddScoped<IMealService, MealService>();
 builder.Services.AddScoped<IWorkoutService, WorkoutService>();
