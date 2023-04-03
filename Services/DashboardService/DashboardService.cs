@@ -12,7 +12,7 @@ namespace FitnessTrackMicro.Services.DashboardService
         }
         public async Task<DashboardResults> GetDashboardData(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<DashboardResults>($"http://localhost:8087/api/Dashboard?userId={userId}&Date={date}");
+            var result = await _http.GetFromJsonAsync<DashboardResults>($"https://dashboard-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Dashboard?userId={userId}&Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

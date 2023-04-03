@@ -28,7 +28,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             workoutToStart.TotalVolume = 0;
             workoutToStart.StartTime = DateTime.Now;
 
-            var result = await _http.PostAsJsonAsync($"http://localhost:8081/api/TrackedWorkouts", workoutToStart);
+            var result = await _http.PostAsJsonAsync($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/TrackedWorkouts", workoutToStart);
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
             // TODO: null check
             TrackedWorkouts.Add(response);
@@ -47,7 +47,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:8081/api/TrackedWorkouts/GetWorkout/{id}");
+                result = await _http.GetFromJsonAsync<TrackedWorkout>($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/TrackedWorkouts/GetWorkout/{id}");
             //}
 
             if (result != null)
@@ -70,7 +70,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<TrackedWorkout>($"http://localhost:8081/api/TrackedWorkouts/GetLatestCompleted/{parentWorkoutId}");
+                result = await _http.GetFromJsonAsync<TrackedWorkout>($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/TrackedWorkouts/GetLatestCompleted/{parentWorkoutId}");
             //}
 
             if (result != null)
@@ -82,7 +82,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
 
         public async Task UpdateTrackedWorkout(TrackedWorkout workout, bool finish = false)
         {
-            var result = await _http.PutAsJsonAsync($"http://localhost:8081/api/TrackedWorkouts/{workout.Id}", workout);
+            var result = await _http.PutAsJsonAsync($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/TrackedWorkouts/{workout.Id}", workout);
             var response = await result.Content.ReadFromJsonAsync<TrackedWorkout>();
             int index = TrackedWorkouts.FindIndex(w => w.Id == workout.Id);
             if (index != -1)
@@ -114,7 +114,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"http://localhost:8081/api/TrackedWorkouts/{parentWorkoutId}");
+                result = await _http.GetFromJsonAsync<List<TrackedWorkout>>($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/TrackedWorkouts/{parentWorkoutId}");
                 result = result.Where(tw => tw.IsCompleted == true).ToList();
             //}
 
@@ -130,7 +130,7 @@ namespace FitnessTrackMicro.Services.TrackedWorkoutService
 
         public async Task<Dictionary<int, List<AverageResults>>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"http://localhost:8087/api/Dashboard/GetWorkoutsAverages?userId={userId}&Date={date}");
+            var result = await _http.GetFromJsonAsync<Dictionary<int, List<AverageResults>>>($"https://dashboard-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Dashboard/GetWorkoutsAverages?userId={userId}&Date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

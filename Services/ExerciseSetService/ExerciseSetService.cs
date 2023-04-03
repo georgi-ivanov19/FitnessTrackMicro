@@ -35,7 +35,7 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
                     });
                 }
             }
-            var result = await _http.PostAsJsonAsync($"http://localhost:8081/api/ExerciseSets/range", list);
+            var result = await _http.PostAsJsonAsync($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/ExerciseSets/range", list);
 
             var response = await result.Content.ReadFromJsonAsync<List<ExerciseSet>>();
             // var trackedWorkout = await _localStorage.GetItemAsync<TrackedWorkout>($"TrackedWorkout{tw.Id}");
@@ -45,7 +45,7 @@ namespace FitnessTrackMicro.Services.ExerciseSetService
         }
         public async Task<ExerciseSet> UpdateExerciseSet(ExerciseSet set)
         {
-            var result = await _http.PutAsJsonAsync($"http://localhost:8081/api/ExerciseSets/{set.Id}", set);
+            var result = await _http.PutAsJsonAsync($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/ExerciseSets/{set.Id}", set);
             var response = await result.Content.ReadFromJsonAsync<ExerciseSet>();
             // TODO: null check
             int index = ExerciseSets.FindIndex(e => e.Id == set.Id);

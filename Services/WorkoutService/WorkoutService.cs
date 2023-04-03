@@ -22,7 +22,7 @@ namespace FitnessTrackMicro.Services.WorkoutService
         }
         public async Task CreateWorkout(Workout workout)
         {
-            var result = await _http.PostAsJsonAsync("http://localhost:8081/api/workouts", workout);
+            var result = await _http.PostAsJsonAsync("https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/workouts", workout);
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             Workouts.Add(response);
@@ -32,7 +32,7 @@ namespace FitnessTrackMicro.Services.WorkoutService
 
         public async Task DeleteWorkout(int id)
         {
-            await _http.DeleteAsync($"http://localhost:8081/api/workouts/{id}");
+            await _http.DeleteAsync($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/workouts/{id}");
             Workouts.RemoveAt(Workouts.FindIndex(r => r.Id == id));
             //await _localStorage.SetItemAsync("Workouts", Workouts);
         }
@@ -48,7 +48,7 @@ namespace FitnessTrackMicro.Services.WorkoutService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<Workout>($"http://localhost:8081/api/workouts/GetWorkout/{id}");
+                result = await _http.GetFromJsonAsync<Workout>($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/workouts/GetWorkout/{id}");
             //}
 
             if (result != null)
@@ -67,7 +67,7 @@ namespace FitnessTrackMicro.Services.WorkoutService
             //    result = await _localStorage.GetItemAsync<List<Workout>>("Workouts");
             //} else
             //{
-                result = await _http.GetFromJsonAsync<List<Workout>>($"http://localhost:8081/api/workouts?userId={userId}");
+                result = await _http.GetFromJsonAsync<List<Workout>>($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/workouts?userId={userId}");
             //    await _localStorage.SetItemAsync<List<Workout>>("Workouts", result);
             //}
 
@@ -79,7 +79,7 @@ namespace FitnessTrackMicro.Services.WorkoutService
 
         public async Task UpdateWorkout(Workout workout, bool fromForm)
         {
-            var result = await _http.PutAsJsonAsync($"http://localhost:8081/api/workouts/{workout.Id}", workout);
+            var result = await _http.PutAsJsonAsync($"https://workouts-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/workouts/{workout.Id}", workout);
             var response = await result.Content.ReadFromJsonAsync<Workout>();
             // TODO: null check
             int index = Workouts.FindIndex(w => w.Id == workout.Id);

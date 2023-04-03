@@ -36,7 +36,7 @@ namespace FitnessTrackMicro.Services.MealService
             // }
             // else
             // {
-                result = await _http.GetFromJsonAsync<List<Meal>>($"http://localhost:8085/api/Meals?applicationUserId={userId}");
+                result = await _http.GetFromJsonAsync<List<Meal>>($"https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals?applicationUserId={userId}");
                 //await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
             //}
 
@@ -48,7 +48,7 @@ namespace FitnessTrackMicro.Services.MealService
 
         public async Task CreateMeal(Meal meal)
         {
-            var result = await _http.PostAsJsonAsync("http://localhost:8085/api/Meals", meal);
+            var result = await _http.PostAsJsonAsync("https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals", meal);
             var response = await result.Content.ReadFromJsonAsync<Meal>();
             Meals.Add(response);
             await _localStorage.SetItemAsync("Meals", Meals);
@@ -71,7 +71,7 @@ namespace FitnessTrackMicro.Services.MealService
             //    Content = new StringContent(JsonConvert.SerializeObject(httpBody), Encoding.UTF8, "application/json")
 
             //};
-            await _http.DeleteAsync($"http://localhost:8085/api/Meals?mealId={id}&applicationUserId={userId}");
+            await _http.DeleteAsync($"https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals?mealId={id}&applicationUserId={userId}");
             //await _http.SendAsync(request);
 
             Meals.RemoveAt(Meals.FindIndex(m => m.Id == id));
@@ -93,13 +93,13 @@ namespace FitnessTrackMicro.Services.MealService
             //    Content = new StringContent(JsonConvert.SerializeObject(httpBody), Encoding.UTF8, "application/json")
             //};
             //await _http.SendAsync(request);
-            var response = await _http.GetFromJsonAsync<Meal>($"http://localhost:8085/api/Meals/{id}?applicationUserId={userId}");
+            var response = await _http.GetFromJsonAsync<Meal>($"https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals/{id}?applicationUserId={userId}");
             return response;
         }
 
         public async Task UpdateMeal(Meal meal)
         {
-            var httpResult = await _http.PutAsJsonAsync($"http://localhost:8085/api/Meals/{meal.Id}", meal);
+            var httpResult = await _http.PutAsJsonAsync($"https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals/{meal.Id}", meal);
             var response = await httpResult.Content.ReadFromJsonAsync<Meal>();
 
             // TODO: null check
@@ -137,7 +137,7 @@ namespace FitnessTrackMicro.Services.MealService
 
         public async Task<List<AverageResults>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8087/api/Dashboard/GetMealsAverages?userId={userId}&date={date}");
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"https://dashboard-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Dashboard/GetMealsAverages?userId={userId}&date={date}");
             if (result == null)
                 throw new Exception("No results found");
             return result;

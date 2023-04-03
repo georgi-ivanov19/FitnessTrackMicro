@@ -31,7 +31,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             // }
             // else
             // {
-            result = await _http.GetFromJsonAsync<List<Measurement>>($"http://localhost:8083/api/Measurements?applicationUserId={applicationUserId}");
+            result = await _http.GetFromJsonAsync<List<Measurement>>($"https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements?applicationUserId={applicationUserId}");
                 // await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
             // }
 
@@ -57,7 +57,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //}
             //else
             //{
-                result = await _http.GetFromJsonAsync<Measurement>($"http://localhost:8083/api/Measurements/{id}");
+                result = await _http.GetFromJsonAsync<Measurement>($"https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements/{id}");
             //}
 
             //if (result != null)
@@ -75,7 +75,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             //// TODO: null check
             //
             //await _localStorage.SetItemAsync("Measurements", Measurements);
-            var result = await _http.PostAsJsonAsync("http://localhost:8083/api/Measurements", measurement);
+            var result = await _http.PostAsJsonAsync("https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements", measurement);
             var response = await result.Content.ReadFromJsonAsync<Measurement>();
             Measurements.Add(response);
             _navManager.NavigateTo("measurements");
@@ -83,7 +83,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
 
         public async Task UpdateMeasurement(Measurement measurement)
         {
-            var result = await _http.PutAsJsonAsync($"http://localhost:8083/api/Measurements/{measurement.Id}", measurement);
+            var result = await _http.PutAsJsonAsync($"https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements/{measurement.Id}", measurement);
             var response = await result.Content.ReadFromJsonAsync<Measurement>();
             // TODO: null check
             int index = Measurements.FindIndex(m => m.Id == measurement.Id);
@@ -97,13 +97,13 @@ namespace FitnessTrackMicro.Services.MeasurementsService
 
         public async Task DeleteMeasurement(int id)
         {
-            await _http.DeleteAsync($"http://localhost:8083/api/Measurements/{id}");
+            await _http.DeleteAsync($"https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements/{id}");
             Measurements.RemoveAt(Measurements.FindIndex(m => m.Id == id));
         }
 
         public async Task<List<AverageResults>> GetAverages(string userId, DateTime date)
         {
-            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"http://localhost:8087/api/Dashboard/GetMeasurementsAverages?userId={userId}&Date={date}"); // /GetAverages?userId-{x}
+            var result = await _http.GetFromJsonAsync<List<AverageResults>>($"https://dashboard-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Dashboard/GetMeasurementsAverages?userId={userId}&Date={date}"); // /GetAverages?userId-{x}
             if (result == null)
                 throw new Exception("No results found");
             return result;
