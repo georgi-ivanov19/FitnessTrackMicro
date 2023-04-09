@@ -17,13 +17,16 @@
 <RadzenCard>
     <RadzenText TextStyle="TextStyle.H4" class="d-inline me-1"> Tracking: @parentWorkout.Name </RadzenText>
     <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
-                  ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" style="vertical-align: top;" />
+        ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large"
+        style="vertical-align: top;" />
 
     <div class="top-bar">
         <RadzenText TextStyle="TextStyle.Overline"> Progress </RadzenText>
-        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Success" Value="setsCompleted" Max="totalSets" class="my-2" />
+        <RadzenProgressBar ProgressBarStyle="Radzen.ProgressBarStyle.Success" Value="setsCompleted" Max="totalSets"
+            class="my-2" />
         <RadzenText TextStyle="TextStyle.Overline"> @($"Sets Completed: {setsCompleted}/{totalSets}") </RadzenText>
-        <RadzenText Class="ms-5" TextStyle="TextStyle.Overline"> Total Volume <b>@trackedWorkout.TotalVolume</b> (kg) </RadzenText>
+        <RadzenText Class="ms-5" TextStyle="TextStyle.Overline"> Total Volume <b>@trackedWorkout.TotalVolume</b> (kg)
+        </RadzenText>
     </div>
     <div class="my-2">
         <WorkoutNotes workout="trackedWorkout" disabled=false tracking=true></WorkoutNotes>
@@ -67,14 +70,17 @@
                 </RadzenColumn>
                 <RadzenColumn Size="2" />
                 <RadzenColumn Size="1">
-                    <RadzenNumeric TValue="double?" @bind-Value=@zipped.Item2.Weight Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 100px;"></RadzenNumeric>
+                    <RadzenNumeric TValue="double?" @bind-Value=@zipped.Item2.Weight Disabled="@zipped.Item2.IsComplete"
+                ShowUpDown="false" class="my-1" Style="width: 100px;"></RadzenNumeric>
                 </RadzenColumn>
                 <RadzenColumn Size="1">
-                    <RadzenNumeric TValue="int?" @bind-Value=@zipped.Item2.Reps Disabled="@zipped.Item2.IsComplete" ShowUpDown="false" class="my-1" Style="width: 64px;"></RadzenNumeric>
+                    <RadzenNumeric TValue="int?" @bind-Value=@zipped.Item2.Reps Disabled="@zipped.Item2.IsComplete"
+                ShowUpDown="false" class="my-1" Style="width: 64px;"></RadzenNumeric>
                 </RadzenColumn>
                 <RadzenColumn Size="1">
                     <RadzenCheckBox TValue="bool" Disabled="zipped.Item2.Weight == null || zipped.Item2.Reps == null"
-                            Change="@(args => SetCompleted(args, zipped.Item2))" @bind-Value=@zipped.Item2.IsComplete style="vertical-align: unset;"></RadzenCheckBox>
+                Change="@(args => SetCompleted(args, zipped.Item2))" @bind-Value=@zipped.Item2.IsComplete
+                style="vertical-align: unset;"></RadzenCheckBox>
                 </RadzenColumn>
             </RadzenRow>
         }
@@ -83,7 +89,7 @@
 
     <div style="text-align: right;">
         <RadzenButton Click=@(args => FinishWorkout(trackedWorkout)) Variant="Radzen.Variant.Text" Icon="sports_score"
-                      ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
+            ButtonStyle="Radzen.ButtonStyle.Info" Text="Finish" Size="Radzen.ButtonSize.Large" class="me-auto" />
     </div>
 
 </RadzenCard>
@@ -129,11 +135,11 @@
 
     private async Task SetCompleted(bool value, ExerciseSet set)
     {
-        await ExerciseSetService.UpdateExerciseSet(set);
         trackedWorkout.TotalVolume += (double)set.Weight! * (double)set.Reps!;
         var setIndex = trackedWorkout.ExerciseSetsCompleted.FindIndex(s => s.Id == set.Id);
         trackedWorkout.ExerciseSetsCompleted[setIndex] = set;
         setsCompleted = trackedWorkout.ExerciseSetsCompleted.Count(s => s.IsComplete == true);
+        await TrackedWorkoutService.UpdateTrackedWorkout(trackedWorkout, false);
         //await localStorage.SetItemAsync<TrackedWorkout>("TrackedWorkout" + trackedWorkout.Id, trackedWorkout);
     }
 
@@ -180,6 +186,7 @@
 
     private List<Tuple<ExerciseSet, ExerciseSet>> zippedSetsForExercise(List<ExerciseSet> es, int exId)
     {
-        return latestSetsForExercise(exId).Zip(currentSetsForExercise(trackedWorkout.ExerciseSetsCompleted, exId), (first, second) => Tuple.Create<ExerciseSet, ExerciseSet>(first, second)).ToList();
+        return latestSetsForExercise(exId).Zip(currentSetsForExercise(trackedWorkout.ExerciseSetsCompleted, exId), (first,
+        second) => Tuple.Create<ExerciseSet, ExerciseSet>(first, second)).ToList();
     }
 }
