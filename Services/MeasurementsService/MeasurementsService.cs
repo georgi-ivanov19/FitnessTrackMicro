@@ -31,7 +31,7 @@ namespace FitnessTrackMicro.Services.MeasurementsService
             // }
             // else
             // {
-            result = await _http.GetFromJsonAsync<List<Measurement>>($"https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements?applicationUserId={applicationUserId}");
+            result = await _http.GetFromJsonAsync<List<Measurement>>($"https://measurements-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Measurements?userId={applicationUserId}");
                 // await _localStorage.SetItemAsync<List<Measurement>>("Measurements", result);
             // }
 

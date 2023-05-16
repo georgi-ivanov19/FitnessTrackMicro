@@ -36,7 +36,7 @@ namespace FitnessTrackMicro.Services.MealService
             // }
             // else
             // {
-                result = await _http.GetFromJsonAsync<List<Meal>>($"https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals?applicationUserId={userId}");
+                result = await _http.GetFromJsonAsync<List<Meal>>($"https://meals-api.salmonisland-f0d5c65e.northeurope.azurecontainerapps.io/api/Meals?userId={userId}");
                 //await _localStorage.SetItemAsync<List<Meal>>("Meals", result);
             //}
 
